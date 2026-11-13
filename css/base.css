@@ -1,0 +1,355 @@
+/* ==========================================================
+   Base: tokens, temas, tipografía y utilidades compartidas
+   ========================================================== */
+
+:root {
+  /* Día: papel y tinta */
+  --papel: #F3EDE2;
+  --papel-2: #EAE1D0;
+  --papel-ficha: #FBF8F1;
+  --papel-borde: #D8CDB8;
+  --tinta: #1C1915;
+  --tinta-suave: #5E564B;
+
+  /* Noche: cielo y crema */
+  --noche: #0B0C10;
+  --noche-2: #12141B;
+  --noche-3: #1B1E27;
+  --crema: #ECE5D6;
+  --crema-suave: #A39C8D;
+
+  /* Acentos */
+  --oro: #C9A55C;
+  --oro-claro: #E4C88A;
+  --oro-oscuro: #8F6A27;
+  --terracota: #A8452B;
+  --alerta: #E0483B;
+
+  /* Tipografía */
+  --f-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --t-ceja: 0.75rem;
+  --t-cuerpo: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+  --t-h3: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem);
+  --t-h2: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+  --t-titulo: clamp(2.8rem, 1.6rem + 5.5vw, 6.5rem);
+
+  /* Espaciado */
+  --margen: clamp(1rem, 0.5rem + 3vw, 3rem);
+  --seccion: clamp(4rem, 3rem + 5vw, 9rem);
+
+  /* Movimiento */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
+  --rapido: 180ms;
+  --normal: 420ms;
+  --lento: 900ms;
+
+  /* Ruido de papel (SVG en línea, se pinta una sola vez) */
+  --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Cada vista declara su clima con data-tema en <body> */
+body[data-tema='dia'] {
+  --fondo: var(--papel);
+  --fondo-2: var(--papel-2);
+  --texto: var(--tinta);
+  --texto-suave: var(--tinta-suave);
+  --borde: var(--papel-borde);
+  --acento: var(--oro-oscuro);
+  --acento-2: var(--terracota);
+  --sombra: 28 22 14;
+}
+
+body[data-tema='noche'] {
+  --fondo: var(--noche);
+  --fondo-2: var(--noche-2);
+  --texto: var(--crema);
+  --texto-suave: var(--crema-suave);
+  --borde: #2A2D37;
+  --acento: var(--oro);
+  --acento-2: var(--oro-claro);
+  --sombra: 0 0 0;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--f-serif);
+  font-size: var(--t-cuerpo);
+  font-optical-sizing: auto;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--lento) var(--ease-suave), color var(--lento) var(--ease-suave);
+}
+
+/* Grano de papel sobre todo el sitio (más visible de día) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: var(--grano);
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+body[data-tema='noche']::after {
+  opacity: 0.07;
+  mix-blend-mode: screen;
+}
+
+img,
+svg { display: block; max-width: 100%; }
+
+h1, h2, h3, p { margin: 0; }
+
+a { color: inherit; }
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--oro);
+  color: var(--tinta);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+[hidden] { display: none !important; }
+
+main:focus { outline: none; }
+
+/* ---------- Utilidades ---------- */
+.saltar {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--oro);
+  color: var(--tinta);
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  transform: translateY(-200%);
+  transition: transform var(--rapido) ease;
+}
+
+.saltar:focus { transform: none; }
+
+.solo-lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.ceja {
+  font-family: var(--f-mono);
+  font-size: var(--t-ceja);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.sin-js {
+  max-width: 40rem;
+  margin: 4rem auto;
+  padding: 0 var(--margen);
+}
+
+/* Enlace de regreso, compartido por materia y lector */
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.migas a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  text-decoration: none;
+  transition: color var(--rapido) ease;
+}
+
+.migas a:hover { color: var(--acento); }
+
+.migas a .flecha {
+  display: inline-block;
+  transition: transform var(--normal) var(--ease-expo);
+}
+
+.migas a:hover .flecha { transform: translateX(-4px); }
+
+/* Botón de contorno */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.2rem;
+  border: 1px solid var(--acento);
+  border-radius: 999px;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--texto);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--rapido) ease, color var(--rapido) ease, transform var(--rapido) ease;
+}
+
+.boton:hover {
+  background: var(--acento);
+  color: var(--fondo);
+}
+
+.boton:active { transform: scale(0.97); }
+
+/* ---------- Vistas y transiciones ---------- */
+.vista { position: relative; }
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: var(--velo-color, var(--noche));
+  opacity: 0;
+  clip-path: circle(150% at 50% 50%);
+}
+
+.velo.is-circulo {
+  opacity: 1;
+  animation: velo-circulo 900ms var(--ease-suave) forwards;
+}
+
+.velo.is-fundido { animation: velo-fundido 360ms ease forwards; }
+.velo.is-saliendo { animation: velo-salida 520ms ease forwards; }
+
+@keyframes velo-circulo {
+  from { clip-path: circle(0% at var(--velo-x, 50%) var(--velo-y, 50%)); }
+  to { clip-path: circle(150% at var(--velo-x, 50%) var(--velo-y, 50%)); }
+}
+
+@keyframes velo-fundido {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes velo-salida {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Entrada de cada vista */
+.vista.is-entrando > * {
+  animation: entrar var(--lento) var(--ease-expo) both;
+}
+
+/* El lector tiene elementos fijos (barra de progreso): solo se funde, sin transform */
+.vista.is-entrando > .lector { animation-name: fundido; }
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fundido {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Aparición al hacer scroll (la clase la agrega JS solo si hay IntersectionObserver) */
+.js-revelar .revelar {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 700ms ease, transform 900ms var(--ease-expo);
+  transition-delay: var(--retraso, 0ms);
+}
+
+.js-revelar .revelar.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Firmamento fijo (vistas de noche) ---------- */
+.firmamento {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--lento) ease;
+}
+
+body[data-tema='noche']:not([data-vista='portada']) .firmamento { opacity: 0.55; }
+
+.estrellas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: var(--estrellas, none);
+  animation: titilar var(--dur, 5s) ease-in-out infinite alternate;
+}
+
+.estrellas--1 { --dur: 4.2s; }
+.estrellas--2 { --dur: 6.5s; width: 1.5px; height: 1.5px; animation-delay: -2s; }
+.estrellas--3 { --dur: 3.1s; width: 2px; height: 2px; animation-delay: -1s; }
+
+@keyframes titilar {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+/* Menos movimiento: se respeta la preferencia del sistema */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js-revelar .revelar { opacity: 1; transform: none; }
+}

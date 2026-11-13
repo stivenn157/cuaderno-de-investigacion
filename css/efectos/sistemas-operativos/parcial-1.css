@@ -1,0 +1,302 @@
+/* Efectos: Parcial 1 · Caso TecnoGestión */
+
+/* ---------- Ticket ---------- */
+.p1-ticket { --fx-led: var(--fx-ambar); }
+.p1-ticket.is-resuelto { --fx-led: var(--fx-verde); }
+
+.p1-ticket__id {
+  margin-top: 0.8rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.p1-ticket__avance {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p1-ticket__avance li {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--borde);
+  transition: background-color 500ms ease;
+}
+
+.p1-ticket__avance li.is-hecho { background: var(--fx-led); }
+
+.p1-ticket__sintomas li.is-hecho {
+  text-decoration: line-through;
+  text-decoration-color: var(--fx-verde);
+}
+
+.p1-ticket__sintomas li.is-hecho::before { background: var(--fx-verde); border-color: var(--fx-verde); }
+
+/* ---------- Ventana congelada ---------- */
+.p1-ventana { padding: 0; overflow: hidden; }
+
+.p1-ventana__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--borde);
+  background: var(--fondo);
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+}
+
+.p1-ventana__nr { color: var(--fx-rojo); }
+
+.p1-ventana__botones { display: flex; gap: 0.6rem; }
+
+.p1-ventana__botones i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1px solid var(--texto-suave);
+  border-radius: 2px;
+}
+
+.p1-ventana__cuerpo {
+  position: relative;
+  padding: 1.2rem 1.2rem 1.6rem;
+}
+
+.p1-ventana__filas { display: grid; gap: 0.6rem; }
+
+.p1-ventana__filas span {
+  height: 0.8rem;
+  border-radius: 2px;
+  background: var(--borde);
+  width: calc(95% - var(--i) * 12%);
+}
+
+/* El velo blanco de Windows cuando una ventana no responde */
+.p1-ventana__cuerpo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  transition: opacity 1.2s ease 600ms;
+}
+
+.p1-ventana.is-activa .p1-ventana__cuerpo::after { opacity: 1; }
+
+.p1-ventana__espera {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin: -1rem 0 0 -1rem;
+  border: 3px solid var(--borde);
+  border-top-color: #2F5FA8;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 400ms ease 1s;
+}
+
+.p1-ventana.is-activa .p1-ventana__espera {
+  opacity: 1;
+  animation: fx-girar 1s linear infinite;
+}
+
+.p1-ventana .fx-nota { padding: 0 1rem 0.9rem; margin: 0; }
+
+/* ---------- Umbrales ---------- */
+.p1-umbrales__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p1-umbral {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+}
+
+.p1-umbral__nombre {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.p1-umbral__limite { font-size: 1.05rem; line-height: 1.2; }
+
+.p1-umbral .fx-barra > span {
+  background: var(--fx-rojo);
+  transition-delay: calc(var(--i) * 200ms);
+}
+
+.p1-umbrales.is-activa .p1-umbral .fx-barra > span { transform: scaleX(var(--valor)); }
+
+.p1-umbral__nota {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  color: var(--fx-rojo);
+}
+
+/* ---------- Recorrido de impresión ---------- */
+.p1-ruta__via { position: relative; padding-top: 1.4rem; }
+
+.p1-ruta__nodos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p1-nodo {
+  position: relative;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+  text-align: center;
+  opacity: 0.4;
+  transition: opacity 500ms ease, border-color 500ms ease;
+  transition-delay: calc(var(--i) * 350ms);
+}
+
+.p1-ruta.is-activa .p1-nodo { opacity: 1; }
+
+.p1-nodo__nombre { display: block; font-size: 0.95rem; }
+
+.p1-nodo__detalle {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  color: var(--texto-suave);
+}
+
+.p1-ruta.is-activa .p1-nodo--falla {
+  border-color: var(--fx-rojo);
+  animation: fx-latido 1s steps(2) 1.6s infinite;
+}
+
+.p1-nodo--falla::after {
+  content: '×';
+  position: absolute;
+  top: -0.65rem;
+  right: -0.4rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--fx-rojo);
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+  opacity: 0;
+  transition: opacity 300ms ease 1.6s;
+}
+
+.p1-ruta.is-activa .p1-nodo--falla::after { opacity: 1; }
+
+/* El trabajo de impresión viaja y se detiene en la red */
+.p1-ruta__trabajo {
+  position: absolute;
+  top: 0.35rem;
+  left: 8%;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  background: var(--acento);
+  opacity: 0;
+}
+
+.p1-ruta.is-activa .p1-ruta__trabajo { animation: p1-viaje 3.4s var(--ease-suave) 0.4s infinite; }
+
+@keyframes p1-viaje {
+  0% { opacity: 0; transform: translateX(0); }
+  10% { opacity: 1; }
+  55%, 80% { opacity: 1; transform: translateX(calc(var(--ancho-via, 32rem) * 0.6)); background: var(--fx-rojo); }
+  100% { opacity: 0; transform: translateX(calc(var(--ancho-via, 32rem) * 0.6)); }
+}
+
+/* ---------- Cierre ---------- */
+.p1-cierre__cuerpo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.p1-cierre__horas {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.p1-cierre__n {
+  font-family: var(--f-serif);
+  font-size: 3.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--acento);
+  font-variant-numeric: tabular-nums;
+}
+
+.p1-cierre__lista {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p1-cierre__lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  opacity: 0.35;
+  transition: opacity 500ms ease;
+  transition-delay: calc(var(--i) * 500ms + 600ms);
+}
+
+.p1-cierre__lista li::before {
+  content: '✓';
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: var(--fx-verde);
+  color: #fff;
+  font-size: 0.75rem;
+  transform: scale(0);
+  transition: transform 450ms cubic-bezier(0.3, 1.6, 0.5, 1);
+  transition-delay: inherit;
+}
+
+.p1-cierre.is-activa .p1-cierre__lista li { opacity: 1; }
+.p1-cierre.is-activa .p1-cierre__lista li::before { transform: scale(1); }
+
+@media (max-width: 640px) {
+  .p1-ruta__nodos { grid-template-columns: repeat(2, 1fr); }
+  .p1-ruta__trabajo { display: none; }
+  .p1-cierre__cuerpo { grid-template-columns: 1fr; }
+}

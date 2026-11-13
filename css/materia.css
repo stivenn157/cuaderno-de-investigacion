@@ -1,0 +1,302 @@
+/* ==========================================================
+   Sección de materia: cabecera y fichas de documentos
+   ========================================================== */
+
+.materia {
+  position: relative;
+  z-index: 1;
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 2.5vw, 2rem) var(--margen) 0;
+}
+
+/* El astro puede salirse del contenedor; el recorte lo hace la vista */
+#vista-materia { overflow-x: clip; }
+
+/* Astro decorativo en la esquina superior */
+.materia__astro {
+  position: absolute;
+  top: clamp(-5rem, -6vw, -2rem);
+  right: clamp(-6rem, -5vw, -2rem);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.materia__astro .sol,
+.materia__astro .luna { --d: clamp(220px, 34vw, 420px); }
+
+.materia--dia .materia__astro { opacity: 0.9; }
+.materia--noche .materia__astro { opacity: 0.85; }
+
+/* De día el sol queda detrás del texto: se suaviza su halo para no competir */
+.materia--dia .sol__halo {
+  background: radial-gradient(circle, rgba(255, 186, 92, 0.3) 0%, rgba(255, 150, 60, 0.08) 40%, transparent 65%);
+}
+
+/* ---------- Cabecera ---------- */
+.materia__cabecera {
+  max-width: 50rem;
+  padding: clamp(3rem, 10vh, 7rem) 0 clamp(3rem, 8vh, 5rem);
+}
+
+.materia__titulo {
+  margin: 1rem 0 1.75rem;
+  font-size: var(--t-titulo);
+  font-weight: 330;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.materia__titulo em {
+  font-weight: 300;
+  color: var(--acento);
+}
+
+.materia--noche .materia__titulo em { color: var(--oro-claro); }
+
+.materia__intro {
+  max-width: 40rem;
+  font-size: clamp(1.1rem, 1rem + 0.45vw, 1.35rem);
+  font-weight: 330;
+  line-height: 1.6;
+  color: var(--texto-suave);
+}
+
+.materia__datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem clamp(1.5rem, 4vw, 3.5rem);
+  margin: 2.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--borde);
+}
+
+.materia__datos dt {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.materia__datos dd {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+}
+
+/* ---------- Archivo de fichas ---------- */
+.materia__archivo-titulo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.materia__archivo-titulo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+.fichas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ficha { position: relative; }
+
+.ficha__papel {
+  --sombra-ficha: 0 1px 1px rgba(var(--sombra), 0.08), 0 14px 32px -14px rgba(var(--sombra), 0.45);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.4rem 1.5rem 1.25rem;
+  color: var(--tinta);
+  background:
+    linear-gradient(var(--papel-ficha), var(--papel-ficha)) padding-box;
+  border-top: 3px solid var(--oro);
+  border-radius: 2px;
+  box-shadow: var(--sombra-ficha);
+  transform: rotate(var(--giro, 0deg));
+  transition: transform 700ms var(--ease-expo);
+}
+
+/* Renglones de ficha bibliográfica */
+.ficha__papel::before {
+  content: '';
+  position: absolute;
+  inset: 4.6rem 0 0;
+  background: repeating-linear-gradient(180deg, transparent 0 1.85rem, rgba(110, 130, 170, 0.12) 1.85rem calc(1.85rem + 1px));
+  pointer-events: none;
+}
+
+/* Sombra extra en una capa aparte: solo se anima su opacidad */
+.ficha__papel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 30px 50px -18px rgba(var(--sombra), 0.55);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.materia--noche .ficha__papel {
+  --sombra-ficha: 0 1px 1px rgba(0, 0, 0, 0.3), 0 18px 40px -12px rgba(0, 0, 0, 0.75);
+  background: linear-gradient(#F4EEE2, #F4EEE2) padding-box;
+}
+
+.ficha:hover .ficha__papel,
+.ficha:focus-within .ficha__papel {
+  transform: rotate(0deg) translateY(-8px);
+}
+
+.ficha:hover .ficha__papel::after,
+.ficha:focus-within .ficha__papel::after { opacity: 1; }
+
+.ficha__cabeza {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(168, 69, 43, 0.45);
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.ficha__tipo {
+  position: relative;
+  margin-top: 1.1rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oro-oscuro);
+}
+
+.ficha__titulo {
+  position: relative;
+  margin: 0.25rem 0 0.75rem;
+  font-size: clamp(1.45rem, 1.2rem + 0.7vw, 1.8rem);
+  font-weight: 420;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.ficha__resumen {
+  position: relative;
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.85rem; /* coincide con los renglones */
+  color: #3D372F;
+}
+
+.ficha__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--papel-borde);
+}
+
+.ficha__autores {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--tinta-suave);
+}
+
+.ficha__leer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--tinta);
+}
+
+/* Toda la ficha es clicable (el enlace se estira sobre el papel) */
+.ficha__leer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.ficha__flecha {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--tinta);
+  border-radius: 50%;
+  transition: transform 500ms var(--ease-expo), background-color var(--rapido) ease, color var(--rapido) ease;
+}
+
+.ficha:hover .ficha__flecha,
+.ficha:focus-within .ficha__flecha {
+  transform: translateX(4px);
+  background: var(--tinta);
+  color: var(--papel-ficha);
+}
+
+/* ---------- Pie de la sección ---------- */
+.pie {
+  margin-top: var(--seccion);
+  padding: clamp(2.5rem, 6vw, 4rem) 0 2rem;
+  border-top: 1px solid var(--borde);
+}
+
+.pie__cruce {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.pie__materia {
+  font-size: clamp(2rem, 1.4rem + 3vw, 4rem);
+  font-weight: 320;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color var(--normal) ease;
+}
+
+.pie__materia span {
+  display: inline-block;
+  transition: transform 600ms var(--ease-expo);
+}
+
+.pie__cruce:hover .pie__materia { color: var(--acento); }
+.pie__cruce:hover .pie__materia span { transform: translateX(10px); }
+
+.pie__creditos {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 640px) {
+  .materia__astro { top: -4rem; right: -5rem; opacity: 0.6; }
+  .ficha__papel { transform: rotate(calc(var(--giro, 0deg) * 0.5)); }
+}

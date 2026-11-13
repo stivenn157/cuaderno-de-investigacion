@@ -1,0 +1,176 @@
+/* Efectos: Actividad práctica · Diagnóstico de un equipo lento */
+
+.ap-monitor .fx-led { background: var(--fx-led); box-shadow: 0 0 8px var(--fx-led); }
+.ap-monitor .fx-panel__estado { color: var(--fx-led); }
+
+.ap-monitor__procesos {
+  margin-top: 0.2rem;
+  font-family: var(--f-serif);
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.prosa .fx-con-paso .fx-paso { display: flex; width: fit-content; margin-bottom: 0.5rem; }
+
+.ap-etiqueta {
+  font-family: var(--f-mono);
+  font-size: 0.74em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+/* ---------- Lista de procesos ---------- */
+.ap-procesos__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+}
+
+.ap-proceso {
+  position: relative;
+  display: grid;
+  grid-template-columns: 8.5rem 1fr 4rem;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--borde);
+  transition: opacity 600ms ease;
+}
+
+.ap-proceso__barra {
+  height: 0.6rem;
+  border-radius: 2px;
+  background: var(--borde);
+  overflow: hidden;
+}
+
+.ap-proceso__barra span {
+  display: block;
+  height: 100%;
+  background: var(--fx-rojo);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 140ms);
+}
+
+.ap-procesos.is-activa .ap-proceso__barra span { transform: scaleX(var(--uso)); }
+
+.ap-proceso__uso { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Tras la acción 1, los procesos que no son del trabajo quedan finalizados */
+.ap-proceso--cerrar::after {
+  content: 'finalizado';
+  position: absolute;
+  right: 4.8rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--fx-verde);
+  border-radius: 3px;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fx-verde);
+  opacity: 0;
+  transform: scale(1.4) rotate(-6deg);
+  transition: opacity 300ms ease, transform 450ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.ap-procesos.is-limpio .ap-proceso--cerrar { opacity: 0.55; }
+.ap-procesos.is-limpio .ap-proceso--cerrar .ap-proceso__nombre { text-decoration: line-through; }
+.ap-procesos.is-limpio .ap-proceso--cerrar::after { opacity: 1; transform: none; }
+
+/* ---------- Memoria virtual ---------- */
+.ap-virtual__esquema {
+  display: grid;
+  grid-template-columns: 1fr 3rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ap-virtual__caja {
+  padding: 0.9rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+}
+
+.ap-virtual__nombre { display: block; font-size: 1.1rem; }
+
+.ap-virtual__dato {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  color: var(--texto-suave);
+}
+
+.ap-virtual__paginas {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 3px;
+  margin-top: 0.7rem;
+}
+
+.ap-virtual__paginas span {
+  height: 1.2rem;
+  border-radius: 2px;
+  background: var(--acento);
+}
+
+.ap-virtual__paginas--disco span {
+  background: var(--borde);
+  transition: background-color 500ms ease;
+  transition-delay: calc(var(--i) * 0ms);
+}
+
+/* Las últimas páginas se mudan de la RAM al disco */
+.ap-virtual.is-activa .ap-virtual__paginas:not(.ap-virtual__paginas--disco) span:nth-child(n + 4) {
+  animation: ap-sale 3.6s ease-in-out infinite;
+}
+
+.ap-virtual.is-activa .ap-virtual__paginas--disco span:nth-child(-n + 3) {
+  animation: ap-entra 3.6s ease-in-out infinite;
+}
+
+@keyframes ap-sale {
+  0%, 20% { opacity: 1; transform: none; }
+  45%, 75% { opacity: 0.15; transform: translateX(12px); }
+  100% { opacity: 1; transform: none; }
+}
+
+@keyframes ap-entra {
+  0%, 30% { background: var(--borde); }
+  50%, 80% { background: var(--fx-ambar); }
+  100% { background: var(--borde); }
+}
+
+.ap-virtual__flecha {
+  position: relative;
+  height: 2px;
+  background: var(--borde);
+  overflow: hidden;
+}
+
+.ap-virtual__flecha span {
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--fx-ambar);
+  transform: translateX(-100%);
+}
+
+.ap-virtual.is-activa .ap-virtual__flecha span { animation: ap-flujo 1.8s linear infinite; }
+
+@keyframes ap-flujo { to { transform: translateX(260%); } }
+
+@media (max-width: 560px) {
+  .ap-proceso { grid-template-columns: 6.5rem 1fr 3.4rem; }
+  .ap-proceso--cerrar::after { right: 0; top: -0.3rem; }
+  .ap-virtual__esquema { grid-template-columns: 1fr; }
+  .ap-virtual__flecha { height: 1.5rem; width: 2px; justify-self: center; }
+}

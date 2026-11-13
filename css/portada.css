@@ -1,0 +1,599 @@
+/* ==========================================================
+   Portada: presentación con video y escena de los astros
+   ========================================================== */
+
+.portada {
+  position: relative;
+  isolation: isolate;
+  color: var(--crema);
+  overflow-x: clip;
+}
+
+/* ---------- Cielo (fijo detrás de toda la portada) ---------- */
+.cielo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.cielo__base,
+.cielo__dia,
+.cielo__noche,
+.cielo__amanecer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 1.4s var(--ease-suave);
+}
+
+/* Atardecer a la izquierda (donde está el sol), noche cerrada a la derecha */
+.cielo__base {
+  background:
+    radial-gradient(60% 55% at 18% 92%, rgba(242, 137, 43, 0.3), transparent 70%),
+    radial-gradient(45% 45% at 82% 88%, rgba(150, 165, 210, 0.12), transparent 70%),
+    linear-gradient(100deg, #2B1B26 0%, #1C1622 30%, #111219 58%, #0B0C10 100%);
+}
+
+/* Al acercarse al sol, el cielo se entibia */
+.cielo__dia {
+  opacity: 0;
+  background:
+    radial-gradient(75% 70% at 22% 95%, rgba(255, 176, 84, 0.55), transparent 70%),
+    linear-gradient(180deg, #2A1D2A 0%, #5A3236 60%, #8B4A30 100%);
+}
+
+/* Al acercarse a la luna, la noche se vuelve más profunda y azul */
+.cielo__noche {
+  opacity: 0;
+  background:
+    radial-gradient(55% 55% at 78% 85%, rgba(170, 190, 240, 0.22), transparent 70%),
+    linear-gradient(180deg, #05060A 0%, #0B0E18 60%, #131A2C 100%);
+}
+
+/* Resplandor del amanecer: crece a medida que los astros salen (lo controla el scroll) */
+.cielo__amanecer {
+  opacity: var(--amanecer, 0);
+  transition: none;
+  background:
+    radial-gradient(45% 40% at 28% 100%, rgba(255, 160, 70, 0.32), transparent 70%),
+    radial-gradient(40% 38% at 72% 100%, rgba(170, 190, 240, 0.18), transparent 70%);
+}
+
+.portada[data-inclina='sol'] .cielo__dia { opacity: 0.75; }
+.portada[data-inclina='luna'] .cielo__noche { opacity: 0.85; }
+.portada[data-inclina='sol'] .estrellas { opacity: 0.25; }
+
+.cielo .estrellas { transition: opacity 1.2s ease; }
+
+/* Estrella fugaz */
+.fugaz {
+  position: absolute;
+  top: var(--fy, 18%);
+  left: var(--fx, 55%);
+  width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(236, 229, 214, 0.9), transparent);
+  transform-origin: left center;
+  opacity: 0;
+  animation: fugaz 9s ease-in 3s infinite;
+}
+
+@keyframes fugaz {
+  0%, 88% { opacity: 0; transform: rotate(155deg) translateX(0) scaleX(0.2); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(155deg) translateX(-320px) scaleX(1); }
+}
+
+/* ==========================================================
+   1. Presentación
+   ========================================================== */
+.portada__inicio {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(1rem, 2vw, 1.75rem) var(--margen) 1.5rem;
+}
+
+.portada__barra {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(236, 229, 214, 0.14);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--crema-suave);
+}
+
+.portada__texto {
+  max-width: 54rem;
+  margin: clamp(2.5rem, 9vh, 5.5rem) auto clamp(2.5rem, 6vh, 4rem);
+  text-align: center;
+}
+
+.portada .ceja { color: var(--oro); }
+
+.portada__titulo {
+  margin: 1rem 0 1.5rem;
+  font-size: var(--t-titulo);
+  font-weight: 340;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  font-variation-settings: 'SOFT' 50, 'WONK' 0;
+}
+
+.portada__titulo em {
+  display: block;
+  font-weight: 300;
+  color: var(--oro-claro);
+}
+
+.portada__descripcion {
+  max-width: 38rem;
+  margin: 0 auto;
+  font-size: clamp(1.05rem, 1rem + 0.35vw, 1.28rem);
+  font-weight: 330;
+  line-height: 1.65;
+  color: rgba(236, 229, 214, 0.86);
+}
+
+.portada__firma {
+  margin-top: 1.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--crema-suave);
+}
+
+/* Entrada escalonada */
+.portada__texto > * { animation: entrar 1.2s var(--ease-expo) both; }
+.portada__texto > :nth-child(2) { animation-delay: 120ms; }
+.portada__texto > :nth-child(3) { animation-delay: 260ms; }
+.portada__texto > :nth-child(4) { animation-delay: 380ms; }
+.presentacion { animation: entrar 1.4s var(--ease-expo) 500ms both; }
+
+/* ---------- Video de presentación ---------- */
+.presentacion {
+  width: min(100%, 62rem);
+  margin: 0 auto;
+}
+
+.presentacion__pantalla {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(201, 165, 92, 0.35);
+  border-radius: 14px;
+  background: rgba(11, 12, 16, 0.6);
+  box-shadow:
+    0 0 0 8px rgba(236, 229, 214, 0.025),
+    0 50px 90px -40px rgba(0, 0, 0, 0.9);
+}
+
+.presentacion__video,
+.presentacion__marco {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+.presentacion__vacio,
+.presentacion__portada {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 1rem;
+  border: 0;
+  background:
+    radial-gradient(60% 70% at 50% 40%, rgba(201, 165, 92, 0.1), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(236, 229, 214, 0.025) 0 1px, transparent 1px 4px);
+  color: var(--crema);
+  text-align: center;
+}
+
+.presentacion__portada {
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+}
+
+.presentacion__play {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(4rem, 8vw, 5.5rem);
+  aspect-ratio: 1;
+  border: 1px solid var(--oro);
+  border-radius: 50%;
+  background: rgba(11, 12, 16, 0.55);
+  transition: transform 500ms var(--ease-expo), background-color 300ms ease;
+}
+
+.presentacion__play::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--oro);
+  border-radius: 50%;
+  animation: onda-play 2.6s ease-out infinite;
+}
+
+.presentacion__play svg { width: 34%; margin-left: 8%; fill: var(--oro-claro); }
+
+@keyframes onda-play {
+  from { transform: scale(1); opacity: 0.7; }
+  to { transform: scale(1.7); opacity: 0; }
+}
+
+.presentacion__portada:hover .presentacion__play,
+.presentacion__portada:focus-visible .presentacion__play {
+  transform: scale(1.08);
+  background: rgba(201, 165, 92, 0.25);
+}
+
+.presentacion__aviso {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--crema-suave);
+}
+
+.presentacion__pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+}
+
+.presentacion__titulo {
+  font-size: clamp(1.05rem, 1rem + 0.4vw, 1.3rem);
+  font-style: italic;
+  font-weight: 330;
+}
+
+/* Invitación a bajar */
+.portada__bajar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin: clamp(3rem, 8vh, 5rem) auto 0;
+  padding: 0.5rem 1rem;
+  border: 0;
+  background: none;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--crema-suave);
+  cursor: pointer;
+  transition: color var(--rapido) ease;
+}
+
+.portada__bajar:hover { color: var(--oro-claro); }
+
+.portada__bajar-linea {
+  width: 1px;
+  height: 3.5rem;
+  background: linear-gradient(var(--oro), transparent);
+  transform-origin: top;
+  animation: bajar 2.4s var(--ease-suave) infinite;
+}
+
+@keyframes bajar {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ==========================================================
+   2. Escena de los astros (controlada por el scroll)
+   Variables que pone js/portada.js (de 0 a 1):
+   --cabeza, --sube-sol, --sube-luna, --nombres, --amanecer
+   ========================================================== */
+.escena {
+  position: relative;
+  height: 240vh;
+  height: 240svh;
+}
+
+.escena__marco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  padding: clamp(3rem, 11vh, 7rem) var(--margen) 0;
+}
+
+.escena__cabeza {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  opacity: var(--cabeza, 0);
+  transform: translateY(calc((1 - var(--cabeza, 0)) * 40px));
+}
+
+.escena__titulo {
+  margin-top: 0.8rem;
+  font-size: clamp(2.6rem, 1.4rem + 4.5vw, 5.5rem);
+  font-weight: 320;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.escena__titulo em { font-weight: 300; color: var(--oro-claro); }
+
+/* Colinas en primer plano: tapan a los astros mientras están "bajo el horizonte" */
+.colinas {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 100%;
+  height: 30vh;
+  pointer-events: none;
+}
+
+.colinas__lejos {
+  fill: #16141D;
+  stroke: rgba(228, 200, 138, calc(0.08 + var(--amanecer, 0) * 0.35));
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.colinas__cerca { fill: #0C0C11; }
+
+.escena__horizonte { display: none; }
+
+/* ---------- Astros ---------- */
+.astros {
+  --d: clamp(118px, 15vw, 210px);
+  position: absolute;
+  left: 50%;
+  bottom: 24vh;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  width: min(62rem, 100% - 2 * var(--margen));
+  transform: translateX(-50%);
+}
+
+/* El sol sube desde la izquierda y la luna desde la derecha, en arco */
+.astro--sol {
+  opacity: calc(0.2 + var(--sube-sol, 0) * 0.8);
+  transform:
+    translate(calc((1 - var(--sube-sol, 0)) * -16vw), calc((1 - var(--sube-sol, 0)) * 62vh))
+    scale(calc(0.65 + var(--sube-sol, 0) * 0.35));
+}
+
+.astro--luna {
+  opacity: calc(0.2 + var(--sube-luna, 0) * 0.8);
+  transform:
+    translate(calc((1 - var(--sube-luna, 0)) * 16vw), calc((1 - var(--sube-luna, 0)) * 62vh))
+    scale(calc(0.65 + var(--sube-luna, 0) * 0.35));
+}
+
+.astro__nombre,
+.astro__detalle {
+  opacity: var(--nombres, 0);
+  transform: translateY(calc((1 - var(--nombres, 0)) * 14px));
+}
+
+/* Mientras los astros no han salido, no se pueden pulsar */
+.escena:not(.is-lista) .astro { pointer-events: none; }
+
+/* Sin animaciones: la escena se muestra completa y sin altura extra */
+@media (prefers-reduced-motion: reduce) {
+  .escena { height: auto; }
+  .escena__marco { position: relative; }
+}
+
+.astro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  justify-self: center;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: var(--crema);
+  border-radius: 1rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.astro__nombre {
+  margin-top: 0.75rem;
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.7rem);
+  font-style: italic;
+  font-weight: 340;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.astro__detalle {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--crema-suave);
+  transition: color var(--normal) ease;
+}
+
+.astro:hover .astro__detalle,
+.astro:focus-visible .astro__detalle { color: var(--oro-claro); }
+
+.astro:focus-visible { outline-offset: 0; }
+
+/* ---------- Sol ---------- */
+.sol {
+  position: relative;
+  display: block;
+  width: var(--d);
+  height: var(--d);
+  transition: transform 900ms var(--ease-expo);
+}
+
+.sol > span {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.sol__halo {
+  inset: -30%;
+  background: radial-gradient(circle, rgba(255, 186, 92, 0.42) 0%, rgba(255, 140, 50, 0.12) 38%, transparent 65%);
+  animation: respirar 5.5s ease-in-out infinite;
+}
+
+.sol__rayos {
+  inset: -8%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 214, 140, 0.55) 0deg 1.6deg, transparent 1.6deg 12deg);
+  -webkit-mask: radial-gradient(circle, transparent 33%, #000 36%, rgba(0, 0, 0, 0.5) 50%, transparent 70%);
+  mask: radial-gradient(circle, transparent 33%, #000 36%, rgba(0, 0, 0, 0.5) 50%, transparent 70%);
+  animation: girar 70s linear infinite;
+}
+
+.sol__rayos--2 {
+  inset: -2%;
+  background: repeating-conic-gradient(from 6deg, rgba(255, 190, 100, 0.4) 0deg 3deg, transparent 3deg 22deg);
+  animation-duration: 110s;
+  animation-direction: reverse;
+  opacity: 0.8;
+}
+
+.sol__nucleo {
+  inset: 20%;
+  background: radial-gradient(circle at 36% 32%, #FFFBE6 0%, #FFE8A0 18%, #FFC352 42%, #F6922E 72%, #DB6419 100%);
+  box-shadow:
+    0 0 24px 6px rgba(255, 196, 96, 0.6),
+    0 0 70px 22px rgba(255, 150, 50, 0.3),
+    inset -10px -12px 26px rgba(196, 72, 12, 0.5),
+    inset 8px 8px 20px rgba(255, 251, 226, 0.65);
+  overflow: hidden;
+}
+
+/* Granulación de la superficie: gira muy lento para dar vida */
+.sol__nucleo::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.22) 0 6%, transparent 14%),
+    radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.18) 0 5%, transparent 12%),
+    radial-gradient(circle at 55% 75%, rgba(200, 80, 10, 0.25) 0 7%, transparent 15%),
+    radial-gradient(circle at 40% 25%, rgba(255, 255, 255, 0.14) 0 4%, transparent 10%),
+    radial-gradient(circle at 22% 40%, rgba(210, 90, 15, 0.18) 0 4%, transparent 11%);
+  animation: girar 45s linear infinite;
+}
+
+.astro--sol:hover .sol,
+.astro--sol:focus-visible .sol { transform: scale(1.07); }
+
+.astro--sol:hover .sol__halo,
+.astro--sol:focus-visible .sol__halo {
+  animation-duration: 2.4s;
+}
+
+/* ---------- Luna ---------- */
+.luna {
+  position: relative;
+  display: block;
+  width: var(--d);
+  height: var(--d);
+  animation: flotar 7s ease-in-out infinite;
+}
+
+.luna > span { position: absolute; }
+
+.luna__halo {
+  inset: -28%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214, 222, 245, 0.26) 0%, rgba(170, 185, 225, 0.08) 40%, transparent 65%);
+  animation: respirar 7s ease-in-out infinite;
+}
+
+.luna__disco {
+  inset: 20%;
+  border-radius: 50%;
+  background:
+    /* cráteres con borde iluminado */
+    radial-gradient(circle at 32% 34%, rgba(128, 121, 108, 0.55) 0 6%, rgba(255, 255, 255, 0.3) 6.6% 7.4%, transparent 8%),
+    radial-gradient(circle at 63% 62%, rgba(128, 121, 108, 0.45) 0 9%, rgba(255, 255, 255, 0.25) 9.6% 10.4%, transparent 11%),
+    radial-gradient(circle at 52% 20%, rgba(128, 121, 108, 0.4) 0 3.5%, rgba(255, 255, 255, 0.25) 4% 4.6%, transparent 5%),
+    radial-gradient(circle at 74% 34%, rgba(128, 121, 108, 0.4) 0 3%, transparent 4%),
+    radial-gradient(circle at 28% 70%, rgba(128, 121, 108, 0.42) 0 4.5%, rgba(255, 255, 255, 0.22) 5% 5.6%, transparent 6%),
+    radial-gradient(circle at 46% 84%, rgba(128, 121, 108, 0.35) 0 2.5%, transparent 3.5%),
+    /* mares */
+    radial-gradient(28% 20% at 42% 48%, rgba(150, 144, 132, 0.4), transparent 70%),
+    radial-gradient(18% 24% at 66% 40%, rgba(150, 144, 132, 0.3), transparent 70%),
+    radial-gradient(22% 14% at 36% 64%, rgba(150, 144, 132, 0.28), transparent 70%),
+    /* esfera */
+    radial-gradient(circle at 40% 38%, #FAF7EE 0%, #E3DDCE 50%, #BCB4A2 100%);
+  box-shadow:
+    inset -16px -12px 30px rgba(18, 20, 32, 0.6),
+    inset 6px 5px 14px rgba(255, 255, 255, 0.55),
+    0 0 36px 6px rgba(226, 222, 206, 0.22),
+    0 0 110px 34px rgba(160, 178, 222, 0.12);
+  transition: transform 1.2s var(--ease-expo);
+}
+
+/* Estrellitas que aparecen alrededor de la luna al pasar el cursor */
+.luna__chispa {
+  left: var(--x);
+  top: var(--y);
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #fff 0 20%, rgba(255, 255, 255, 0.5) 30%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.2);
+  transition: opacity 600ms ease, transform 900ms var(--ease-expo);
+  transition-delay: var(--r);
+}
+
+.astro--luna:hover .luna__chispa,
+.astro--luna:focus-visible .luna__chispa {
+  opacity: 1;
+  transform: scale(1);
+  animation: titilar 1.6s ease-in-out var(--r) infinite alternate;
+}
+
+.astro--luna:hover .luna__disco,
+.astro--luna:focus-visible .luna__disco { transform: scale(1.06) rotate(-8deg); }
+
+/* ---------- Animaciones compartidas ---------- */
+@keyframes girar { to { transform: rotate(360deg); } }
+
+@keyframes respirar {
+  0%, 100% { transform: scale(0.94); opacity: 0.8; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ---------- Pantallas pequeñas ---------- */
+@media (max-width: 640px) {
+  .portada__barra span:last-child { display: none; }
+  .portada__barra { justify-content: center; }
+  .astros { --d: clamp(104px, 34vw, 140px); bottom: 20vh; }
+  .astro__detalle { letter-spacing: 0.1em; }
+  .colinas { height: 24vh; }
+  .presentacion__pantalla { border-radius: 10px; }
+}

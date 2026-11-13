@@ -1,0 +1,306 @@
+/* Efectos: Taller práctico · Hardware y rendimiento */
+
+/* ---------- Pistas de circuito en los bordes ---------- */
+.tp-circuito {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  width: clamp(0px, calc((100vw - 80rem) / 2), 9rem);
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.tp-circuito--izq { left: 1rem; }
+.tp-circuito--der { right: 1rem; transform: scaleX(-1); }
+
+.tp-circuito path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.tp-circuito__base { stroke: var(--borde); }
+
+.tp-circuito__luz {
+  stroke: var(--oro);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--avance, 0));
+  filter: drop-shadow(0 0 3px rgba(201, 165, 92, 0.6));
+}
+
+.tp-circuito circle { fill: var(--papel-borde); }
+
+/* ---------- Núcleos e hilos ---------- */
+.tp-nucleos__rejilla {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+}
+
+.tp-nucleo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+}
+
+.tp-nucleo__n {
+  grid-column: 1 / -1;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  color: var(--texto-suave);
+}
+
+.tp-hilo {
+  height: 1.8rem;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--borde) 60%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.tp-hilo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fx-verde);
+  transform: scaleY(0.06);
+  transform-origin: bottom;
+  transition: transform 700ms var(--ease-expo), background-color 400ms ease;
+}
+
+/* Un solo hilo: el primero al tope */
+.tp-nucleos.is-activa[data-modo='uno'] .tp-nucleo:first-child .tp-hilo:nth-child(2)::after {
+  transform: scaleY(1);
+  background: var(--fx-rojo);
+}
+
+.tp-nucleos.is-activa[data-modo='uno'] .tp-nucleo:first-child { border-color: var(--fx-rojo); }
+
+/* Render: todos trabajan */
+.tp-nucleos.is-activa[data-modo='todos'] .tp-hilo::after {
+  transform: scaleY(0.92);
+  animation: tp-carga 1.2s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.15s);
+}
+
+@keyframes tp-carga { from { transform: scaleY(0.75); } to { transform: scaleY(1); } }
+
+/* ---------- RAM de 8 GB ---------- */
+.tp-ram__barra {
+  position: relative;
+  height: 2.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+}
+
+.tp-ram__uso { display: flex; height: 100%; }
+
+.tp-ram__bloque {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--gb) / var(--total-gb, 8) * 100%);
+  border-right: 2px solid var(--fondo);
+  background: hsl(calc(28 + var(--i) * 18) 52% 50%);
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-expo), width 700ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 160ms), 0ms;
+}
+
+.tp-ram.is-activa .tp-ram__bloque { transform: scaleX(1); }
+
+.tp-ram[data-ram='32'] { --total-gb: 32; }
+
+/* Lo que no cabe en 8 GB sobresale con rayas: memoria virtual */
+.tp-ram[data-ram='8'] .tp-ram__bloque:nth-child(n + 4) {
+  background: repeating-linear-gradient(45deg, var(--fx-rojo) 0 6px, color-mix(in srgb, var(--fx-rojo) 55%, transparent) 6px 12px);
+}
+
+.tp-ram__limite {
+  position: absolute;
+  top: -0.4rem;
+  bottom: -0.4rem;
+  left: 100%;
+  width: 2px;
+  background: var(--fx-rojo);
+}
+
+.tp-ram[data-ram='32'] .tp-ram__limite { background: var(--fx-verde); }
+
+.tp-ram__barra { overflow: visible; margin-right: 33%; }
+.tp-ram[data-ram='32'] .tp-ram__barra { margin-right: 0; }
+
+/* ---------- DDR ---------- */
+.tp-ddr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--borde);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 500ms ease, transform 600ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 250ms);
+}
+
+.tp-ddr:last-child { border-bottom: 0; }
+.tp-ddrs.is-activa .tp-ddr { opacity: 1; transform: none; }
+
+.tp-ddr__placa { fill: #2D5A3D; }
+.tp-ddr__chip { fill: #1C1915; }
+.tp-ddr__pines { fill: #D9B45A; }
+.tp-ddr__corte { fill: var(--fx-superficie); }
+
+.tp-ddr__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  color: var(--texto-suave);
+}
+
+.tp-ddr__nombre { font-family: var(--f-serif); font-size: 1.2rem; color: var(--texto); }
+
+.tp-ddr__rango {
+  position: relative;
+  height: 0.5rem;
+  margin: 0.3rem 0 0.1rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--borde) 60%, transparent);
+}
+
+.tp-ddr__rango span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--min) * 100%);
+  width: calc((var(--max) - var(--min)) * 100%);
+  border-radius: 3px;
+  background: var(--acento);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 250ms + 300ms);
+}
+
+.tp-ddrs.is-activa .tp-ddr__rango span { transform: scaleX(1); }
+
+/* ---------- Buses ---------- */
+.tp-bus__via { margin-bottom: 0.9rem; }
+
+.tp-bus__rotulo {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.tp-bus__carril {
+  position: relative;
+  height: 1.2rem;
+  margin-bottom: 3px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--borde) 55%, transparent);
+  overflow: hidden;
+}
+
+.tp-bus__carril span {
+  position: absolute;
+  top: 0.25rem;
+  left: 0;
+  width: 1.4rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  background: var(--acento);
+  transform: translateX(-2rem);
+}
+
+.tp-bus.is-activa .tp-bus__via--estrecha span {
+  animation: tp-avanza 5s linear infinite;
+  animation-delay: calc(var(--i) * 1.65s);
+  background: var(--fx-ambar);
+}
+
+.tp-bus.is-activa .tp-bus__via--ancha span {
+  animation: tp-avanza 1.6s linear infinite;
+  animation-delay: calc(var(--i) * 0.32s);
+}
+
+@keyframes tp-avanza { to { transform: translateX(42rem); } }
+
+/* ---------- VRAM ---------- */
+.tp-vram__fila {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.tp-vram__rotulo { font-size: 0.92rem; line-height: 1.25; }
+.tp-vram__rotulo small { font-family: var(--f-mono); font-size: 0.62rem; color: var(--texto-suave); }
+
+.tp-vram__barra {
+  position: relative;
+  height: 1.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--fx-verde) 25%, var(--fondo));
+  overflow: hidden;
+}
+
+.tp-vram__fijo,
+.tp-vram__dinamico {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: var(--fx-ambar);
+  transform-origin: right;
+}
+
+.tp-vram__fijo { width: 6.25%; }
+
+.tp-vram__dinamico {
+  right: 6.25%;
+  width: 30%;
+  background: repeating-linear-gradient(45deg, var(--fx-ambar) 0 6px, color-mix(in srgb, var(--fx-ambar) 50%, transparent) 6px 12px);
+  transform: scaleX(0);
+}
+
+.tp-vram.is-activa .tp-vram__dinamico { animation: tp-presta 3.5s ease-in-out infinite alternate; }
+
+@keyframes tp-presta { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.tp-vram__doble { display: grid; grid-template-columns: 2fr 1fr; gap: 6px; }
+
+.tp-vram__barra--vram { background: color-mix(in srgb, var(--acento) 25%, var(--fondo)); }
+
+.tp-vram__barra--vram span {
+  position: absolute;
+  inset: 0;
+  background: var(--acento);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s var(--ease-expo) 400ms;
+}
+
+.tp-vram.is-activa .tp-vram__barra--vram span { transform: scaleX(0.85); }
+
+@media (max-width: 560px) {
+  .tp-nucleos__rejilla { grid-template-columns: repeat(2, 1fr); }
+  .tp-ddr { grid-template-columns: 1fr; gap: 0.5rem; }
+  .tp-vram__fila { grid-template-columns: 1fr; gap: 0.3rem; }
+}

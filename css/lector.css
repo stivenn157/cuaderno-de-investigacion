@@ -1,0 +1,376 @@
+/* ==========================================================
+   Lector de documentos
+   ========================================================== */
+
+.lector {
+  position: relative;
+  z-index: 1;
+  padding: clamp(1.25rem, 2.5vw, 2rem) var(--margen) 3rem;
+}
+
+/* ---------- Progreso de lectura ---------- */
+.progreso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 3px;
+  background: color-mix(in srgb, var(--borde) 60%, transparent);
+}
+
+.progreso__barra {
+  display: block;
+  height: 100%;
+  background: var(--acento);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.lector__migas {
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.lector__migas > span { opacity: 0.5; }
+
+/* ---------- Cabecera ---------- */
+.lector__cabecera {
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 9vh, 6rem) 0 clamp(2.5rem, 6vh, 4rem);
+  text-align: center;
+}
+
+.lector__tipo {
+  margin-top: 2rem;
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.lector__titulo {
+  margin: 0.6rem 0 1.5rem;
+  font-size: clamp(2.6rem, 1.4rem + 4.8vw, 5.8rem);
+  font-weight: 320;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.lector__resumen {
+  max-width: 38rem;
+  margin: 0 auto;
+  font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+  font-style: italic;
+  font-weight: 330;
+  line-height: 1.6;
+  color: var(--texto-suave);
+  text-wrap: pretty;
+}
+
+.lector__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem clamp(1.5rem, 4vw, 3rem);
+  margin: 2.5rem auto 2rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--borde);
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+
+.lector__meta dt {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.lector__meta dd {
+  margin: 0.25rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+/* ---------- Cuerpo en tres columnas ---------- */
+.lector__cuerpo {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1fr) minmax(0, 42rem) minmax(13rem, 1fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+  max-width: 86rem;
+  margin: 0 auto;
+}
+
+.lector__indice,
+.lector__panel {
+  position: sticky;
+  top: 4.5rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borde) transparent;
+}
+
+.lector__indice[hidden],
+.lector__panel[hidden] {
+  display: block !important;
+  visibility: hidden;
+}
+
+.indice {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.indice button {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0 0.35rem 0.9rem;
+  border: 0;
+  border-left: 1px solid var(--borde);
+  background: none;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--texto-suave);
+  cursor: pointer;
+  transition: color var(--rapido) ease, border-color var(--rapido) ease;
+}
+
+.indice__parte button {
+  margin-top: 1rem;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.indice button:hover { color: var(--texto); }
+
+.indice button.is-actual {
+  color: var(--acento);
+  border-left-color: var(--acento);
+}
+
+/* ---------- Prosa ---------- */
+.prosa {
+  min-width: 0;
+  font-weight: 340;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.prosa > p { margin: 0 0 1.45em; text-wrap: pretty; }
+
+.prosa h2,
+.prosa h3 { scroll-margin-top: 5rem; text-wrap: balance; }
+
+.prosa h2 {
+  margin: 2.4em 0 1em;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--borde);
+  font-size: var(--t-h2);
+  font-weight: 330;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.prosa > h2:first-child { margin-top: 0; }
+
+.titulo-parte {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.prosa h3 {
+  margin: 2.2em 0 0.8em;
+  font-size: var(--t-h3);
+  font-weight: 440;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.prosa h3::before {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin-bottom: 1rem;
+  background: var(--acento);
+}
+
+/* ---------- Títulos que aparecen palabra por palabra ----------
+   Cada palabra sube desde una máscara invisible, una tras otra,
+   y la línea dorada del título se dibuja de izquierda a derecha. */
+.palabra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* margen extra para no recortar acentos, colas (g, p) ni cursivas */
+  padding: 0.12em 0.08em 0.14em 0;
+  margin: -0.12em -0.08em -0.14em 0;
+}
+
+.palabra > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(105%);
+  transition:
+    transform 900ms var(--ease-expo),
+    opacity 500ms ease;
+  transition-delay: calc(var(--p, 0) * 45ms);
+}
+
+.titulo-visible .palabra > span {
+  opacity: 1;
+  transform: none;
+}
+
+.prosa h3[data-partido]::before {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 900ms var(--ease-expo) 150ms;
+}
+
+.prosa h3.titulo-visible::before { transform: none; }
+
+.prosa > h3:first-child { margin-top: 0; }
+
+.capitular::first-letter {
+  float: left;
+  padding: 0.1em 0.12em 0 0;
+  font-size: 4.4em;
+  font-weight: 380;
+  line-height: 0.78;
+  color: var(--acento);
+}
+
+.prosa .referencia {
+  margin-bottom: 0.9em;
+  padding-left: 2em;
+  text-indent: -2em;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--texto-suave);
+  hyphens: none;
+  overflow-wrap: anywhere;
+}
+
+.tabla {
+  margin: 2rem 0 2.5rem;
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+}
+
+.tabla table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  hyphens: none;
+}
+
+.tabla th {
+  padding: 0.8rem 1rem;
+  background: var(--fondo-2);
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.tabla td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--borde);
+  vertical-align: top;
+}
+
+.prosa .diagrama {
+  margin: 2rem 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.lector__cargando {
+  font-style: italic;
+  color: var(--texto-suave);
+  animation: titilar 1s ease-in-out infinite alternate;
+}
+
+/* ---------- Documentos vecinos ---------- */
+.lector__vecinos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 54rem;
+  margin: var(--seccion) auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--borde);
+}
+
+.vecino {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.vecino--siguiente {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.vecino__titulo {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  font-weight: 360;
+  line-height: 1.2;
+  transition: color var(--rapido) ease;
+}
+
+.vecino:hover .vecino__titulo { color: var(--acento); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1180px) {
+  .lector__cuerpo { grid-template-columns: minmax(0, 1fr) minmax(12rem, 15rem); }
+  .lector:not(.lector--especial) .lector__cuerpo { grid-template-columns: minmax(0, 1fr); }
+  .lector:not(.lector--especial) .lector__panel { display: none !important; }
+  .lector__indice { display: none !important; }
+  .prosa { max-width: 42rem; justify-self: center; }
+}
+
+@media (max-width: 860px) {
+  .lector__cuerpo { grid-template-columns: minmax(0, 1fr); }
+  .lector__panel { display: none !important; }
+}
+
+@media (max-width: 560px) {
+  .lector__meta { justify-content: flex-start; }
+  .lector__cabecera { text-align: left; }
+  .lector__resumen { margin: 0; }
+  .lector__vecinos { grid-template-columns: 1fr; }
+  .vecino--siguiente { text-align: left; align-items: flex-start; }
+}

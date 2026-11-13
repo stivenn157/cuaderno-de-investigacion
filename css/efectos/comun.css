@@ -1,0 +1,381 @@
+/* ==========================================================
+   Piezas compartidas por los efectos de los documentos.
+   Usan las variables del tema (día o noche) para verse bien en ambos.
+   ========================================================== */
+
+.lector--especial {
+  --fx-superficie: var(--fondo-2);
+  --fx-tarjeta: color-mix(in srgb, var(--fondo-2) 70%, var(--fondo));
+  --fx-rojo: #D9483B;
+  --fx-verde: #4F9A62;
+  --fx-ambar: #D4932C;
+}
+
+body[data-tema='noche'] .lector--especial { --fx-verde: #86B98A; --fx-ambar: #E3A23B; }
+
+/* ---------- Figura dentro del texto ---------- */
+.fx-figura {
+  position: relative;
+  margin: 0.5rem 0 2.5rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--fx-superficie);
+  hyphens: none;
+}
+
+.fx-figura__cabeza {
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.fx-rotulo {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.fx-nota {
+  margin-top: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.fx-boton {
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto);
+  cursor: pointer;
+  transition: border-color var(--rapido) ease, color var(--rapido) ease, background-color var(--rapido) ease;
+}
+
+.fx-boton:hover { border-color: var(--acento); color: var(--acento); }
+
+/* Grupo de botones de una figura (tipo interruptor) */
+.fx-botones,
+.tt-gantt__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.fx-boton[aria-pressed='true'] { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+
+/* ---------- Panel lateral ---------- */
+.fx-panel {
+  padding: 1.1rem 1.1rem 1.2rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--fx-superficie) 85%, transparent);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--texto-suave);
+}
+
+.fx-panel__cabeza {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--borde);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.fx-led {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fx-led, var(--acento));
+  box-shadow: 0 0 8px var(--fx-led, var(--acento));
+  transition: background-color 500ms ease, box-shadow 500ms ease;
+}
+
+.fx-panel__estado {
+  margin: 0.9rem 0 0.6rem;
+  font-family: var(--f-serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--fx-led, var(--acento));
+  transition: color 500ms ease;
+}
+
+.fx-panel__sub {
+  margin-top: 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Lista de verificación del panel */
+.fx-lista {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fx-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.28rem 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--borde) 70%, transparent);
+  transition: color 400ms ease;
+}
+
+.fx-lista li::before {
+  content: '';
+  flex: none;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 2px;
+  transition: background-color 400ms ease, border-color 400ms ease;
+}
+
+.fx-lista li.is-hecho { color: var(--texto); }
+.fx-lista li.is-hecho::before { background: var(--acento); border-color: var(--acento); }
+.fx-lista li.is-actual { color: var(--acento); }
+
+/* Barras de medición */
+.fx-medidor { margin-top: 0.7rem; }
+
+.fx-medidor__fila {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.fx-medidor__valor { color: var(--texto); font-variant-numeric: tabular-nums; }
+
+.fx-barra {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--borde);
+  overflow: hidden;
+}
+
+.fx-barra > span {
+  display: block;
+  height: 100%;
+  background: var(--fx-color, var(--acento));
+  transform: scaleX(var(--fx-valor, 0));
+  transform-origin: left;
+  transition: transform 1s var(--ease-expo), background-color 600ms ease;
+}
+
+/* ---------- Comandos y teclas dentro del texto ---------- */
+.prosa .fx-codigo {
+  padding: 0.08em 0.4em;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fx-superficie);
+  font-family: var(--f-mono);
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+
+.prosa .fx-tecla {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0.05em 0.45em;
+  border: 1px solid var(--borde);
+  border-bottom-width: 3px;
+  border-radius: 5px;
+  background: var(--fx-superficie);
+  font-family: var(--f-mono);
+  font-size: 0.78em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.prosa .fx-mas { margin: 0 0.2em; color: var(--texto-suave); }
+
+/* ---------- Pasos con casilla ---------- */
+.fx-paso {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 0.4rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.45rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  vertical-align: 0.1em;
+  transition: border-color 400ms ease, color 400ms ease;
+}
+
+.fx-paso__casilla {
+  position: relative;
+  flex: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1.5px solid var(--texto-suave);
+  border-radius: 3px;
+  transition: background-color 400ms ease, border-color 400ms ease;
+}
+
+.fx-paso__casilla::after {
+  content: '';
+  position: absolute;
+  left: 0.22rem;
+  top: 0.05rem;
+  width: 0.25rem;
+  height: 0.48rem;
+  border: solid var(--fondo);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 400ms var(--ease-expo) 150ms;
+}
+
+.fx-con-paso.is-activa .fx-paso { border-color: var(--acento); color: var(--acento); }
+.fx-con-paso.is-activa .fx-paso__casilla { background: var(--acento); border-color: var(--acento); }
+.fx-con-paso.is-activa .fx-paso__casilla::after { transform: rotate(45deg) scale(1); }
+
+/* ---------- Cadena de pasos (flujos) ---------- */
+.fx-cadena {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: cadena;
+}
+
+.fx-cadena li {
+  position: relative;
+  flex: 1 1 8.5rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  opacity: 0.35;
+  transform: translateY(6px);
+  transition: opacity 500ms ease, transform 600ms var(--ease-expo), border-color 500ms ease;
+  transition-delay: calc(var(--i, 0) * 260ms);
+}
+
+.fx-cadena li::before {
+  counter-increment: cadena;
+  content: counter(cadena, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  color: var(--acento);
+}
+
+.is-activa .fx-cadena li {
+  opacity: 1;
+  transform: none;
+}
+
+.fx-cadena li.is-alerta { border-color: color-mix(in srgb, var(--fx-rojo) 60%, transparent); }
+.fx-cadena li.is-alerta::before { color: var(--fx-rojo); }
+
+/* ---------- Correo de ejemplo (phishing) ---------- */
+.fx-correo {
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--fondo);
+  overflow: hidden;
+  font-size: 0.92rem;
+}
+
+.fx-correo__cabeza {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.2rem 0.8rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--borde);
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+}
+
+.fx-correo__cabeza dt { color: var(--texto-suave); }
+.fx-correo__cabeza dd { margin: 0; overflow-wrap: anywhere; }
+
+.fx-correo__cuerpo {
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.fx-correo__enlace {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  background: #2F5FA8;
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 0.74rem;
+}
+
+/* Marcas de alerta que aparecen sobre el correo */
+.fx-senal {
+  position: relative;
+  border-radius: 3px;
+  transition: box-shadow 500ms ease, background-color 500ms ease;
+  transition-delay: calc(var(--i, 0) * 450ms + 400ms);
+}
+
+.is-activa .fx-senal {
+  background: color-mix(in srgb, var(--fx-rojo) 16%, transparent);
+  box-shadow: 0 0 0 2px var(--fx-rojo);
+}
+
+.fx-senales {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+}
+
+.fx-senales li {
+  display: flex;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 400ms ease, transform 500ms var(--ease-expo);
+  transition-delay: calc(var(--i, 0) * 450ms + 500ms);
+}
+
+.fx-senales li::before { content: '!'; color: var(--fx-rojo); font-weight: 500; }
+.is-activa .fx-senales li { opacity: 1; transform: none; }
+
+/* ---------- Animaciones comunes ---------- */
+@keyframes fx-latido {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes fx-girar { to { transform: rotate(360deg); } }

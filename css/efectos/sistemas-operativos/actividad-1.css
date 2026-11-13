@@ -1,0 +1,281 @@
+/* Efectos: Actividad 1 · Fundamentos del sistema operativo */
+
+/* ---------- Terminal lateral ---------- */
+.a1-terminal { background: #1C1915; color: #CFC6B4; border-color: #1C1915; }
+.a1-terminal .fx-panel__cabeza { border-color: #3A342C; color: #A39C8D; }
+.a1-terminal .fx-led { --fx-led: #7FC08A; }
+.a1-terminal .fx-nota { color: #8A8273; }
+
+.a1-terminal__pantalla {
+  min-height: 11rem;
+  margin-top: 0.8rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.a1-terminal__historial {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-terminal__historial li {
+  margin-bottom: 0.45rem;
+  overflow-wrap: anywhere;
+  animation: a1-linea 400ms var(--ease-expo);
+}
+
+.a1-terminal__salida {
+  display: block;
+  color: #8A8273;
+}
+
+.a1-terminal__prompt { color: #E4C88A; }
+
+.a1-terminal__linea { overflow-wrap: anywhere; }
+
+.a1-terminal__cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: #CFC6B4;
+  animation: fx-latido 1s steps(2) infinite;
+}
+
+@keyframes a1-linea {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Diagrama de capas ---------- */
+.a1-capas__pila { position: relative; }
+
+.a1-capas__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-capa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--borde);
+  border-left: 3px solid var(--acento);
+  border-radius: 4px;
+  background: var(--fondo);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 500ms ease, transform 700ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 280ms);
+}
+
+.a1-capa__nombre { font-size: 1.1rem; font-weight: 450; }
+
+.a1-capa__detalle {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--texto-suave);
+}
+
+.a1-enlace {
+  position: relative;
+  height: 2.2rem;
+  margin-left: 2rem;
+  border-left: 1px dashed var(--acento);
+  opacity: 0;
+  transition: opacity 500ms ease;
+  transition-delay: calc(var(--i) * 280ms + 200ms);
+}
+
+.a1-enlace span {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  transform: translateY(-50%);
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.a1-capas.is-activa .a1-capa,
+.a1-capas.is-activa .a1-enlace { opacity: 1; transform: none; }
+
+/* Pulso que viaja del usuario al hardware y regresa */
+.a1-capas__pulso {
+  position: absolute;
+  left: calc(2rem - 4px);
+  top: 1.2rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--terracota);
+  box-shadow: 0 0 10px var(--terracota);
+  opacity: 0;
+}
+
+.a1-capas.is-activa .a1-capas__pulso {
+  opacity: 1;
+  animation: a1-pulso 4.5s var(--ease-suave) 1.4s infinite;
+}
+
+@keyframes a1-pulso {
+  0% { transform: translateY(0); }
+  45%, 55% { transform: translateY(calc(var(--alto-pila, 17rem) - 2.4rem)); }
+  100% { transform: translateY(0); }
+}
+
+.a1-capas__pila { --alto-pila: 18.5rem; }
+
+/* ---------- Cinco funciones ---------- */
+.a1-funciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.a1-funciones li {
+  padding: 0.75rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--texto-suave);
+  transition: background-color 500ms ease, color 500ms ease, border-color 500ms ease, transform 600ms var(--ease-expo);
+}
+
+.a1-funciones__n {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  color: var(--acento);
+}
+
+.a1-funciones li.is-encendida {
+  border-color: var(--acento);
+  background: color-mix(in srgb, var(--oro) 18%, transparent);
+  color: var(--texto);
+  transform: translateY(-3px);
+}
+
+/* ---------- RAM de 4 GB ---------- */
+.a1-ram__fila {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.a1-ram__rotulo {
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.a1-ram__barra,
+.a1-ram__disco {
+  display: flex;
+  height: 2.2rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+  overflow: hidden;
+}
+
+.a1-ram__bloque {
+  display: grid;
+  place-items: center;
+  width: var(--ancho);
+  border-right: 2px solid var(--fondo);
+  background: hsl(calc(30 + var(--i) * 22) 55% 52%);
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-expo);
+}
+
+.a1-ram__bloque.is-dentro { transform: scaleX(1); }
+
+/* Las últimas dos peticiones ya no caben: se ven "apretadas" */
+.a1-ram.is-pagina .a1-ram__bloque:nth-child(n + 3) { filter: saturate(0.4); }
+
+.a1-ram__disco span {
+  flex: 0 0 18%;
+  margin-right: 2px;
+  background: repeating-linear-gradient(45deg, var(--borde) 0 6px, transparent 6px 12px);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms var(--ease-expo);
+}
+
+.a1-ram.is-pagina .a1-ram__disco span { transform: scaleX(1); }
+.a1-ram.is-pagina .a1-ram__disco span:nth-child(2) { transition-delay: 150ms; }
+.a1-ram.is-pagina .a1-ram__disco span:nth-child(3) { transition-delay: 300ms; }
+
+.a1-ram.is-hiper .a1-ram__disco { border-color: var(--fx-rojo); }
+.a1-ram.is-hiper .a1-ram__disco span { animation: fx-latido 0.5s steps(2) infinite; }
+
+.a1-ram__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.4rem;
+}
+
+.a1-ram__estado {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--texto-suave);
+}
+
+.a1-ram.is-hiper .a1-ram__estado { color: var(--fx-rojo); }
+
+/* ---------- Comandos como tarjetas de terminal ---------- */
+.prosa .a1-comando {
+  padding: 1rem 1.1rem;
+  border-radius: 6px;
+  background: #1C1915;
+  color: #CFC6B4;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  hyphens: none;
+}
+
+.a1-comando__nombre {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  color: #E4C88A;
+}
+
+.a1-comando__nombre::before { content: '$ '; color: #7FC08A; }
+
+.a1-comando__linea {
+  display: block;
+  padding-left: 1rem;
+  text-indent: -1rem;
+  overflow-wrap: anywhere;
+}
+
+.a1-comando__linea::before { content: '› '; color: #8A8273; }
+
+@media (max-width: 560px) {
+  .a1-ram__fila { grid-template-columns: 1fr; gap: 0.3rem; }
+}

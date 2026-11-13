@@ -1,0 +1,299 @@
+/* Efectos: Taller teórico · Procesos y sincronización */
+
+/* ---------- Diagrama de estados (panel) ---------- */
+.tt-diagrama { width: 100%; margin-top: 0.4rem; overflow: visible; }
+
+.tt-estado circle {
+  fill: var(--fondo);
+  stroke: var(--borde);
+  stroke-width: 1.5;
+  transition: stroke 400ms ease, fill 400ms ease;
+}
+
+.tt-estado text {
+  fill: var(--texto-suave);
+  font-family: var(--f-mono);
+  font-size: 9px;
+}
+
+.tt-estado.is-actual circle { stroke: var(--acento); fill: color-mix(in srgb, var(--oro) 22%, var(--fondo)); }
+.tt-estado.is-actual text { fill: var(--texto); }
+
+.tt-arista {
+  fill: none;
+  stroke: var(--borde);
+  stroke-width: 1.2;
+}
+
+#tt-flecha path { fill: var(--borde); }
+
+.tt-ficha {
+  fill: var(--terracota);
+  transition: transform 900ms var(--ease-expo);
+}
+
+/* ---------- Gantt ---------- */
+.tt-gantt__botones {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.tt-gantt__filas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+}
+
+.tt-gantt__filas li {
+  display: grid;
+  grid-template-columns: 9rem 1fr 5rem;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+
+.tt-gantt__pista {
+  position: relative;
+  height: 1.4rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--borde) 45%, transparent);
+}
+
+.tt-gantt__barra {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--inicio) * 100%);
+  width: calc(var(--largo) * 100%);
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  background: var(--acento);
+  color: var(--fondo);
+  font-size: 0.66rem;
+  animation: tt-crece 700ms var(--ease-expo) both;
+  animation-delay: calc(var(--i) * 120ms);
+  transform-origin: left;
+}
+
+@keyframes tt-crece { from { transform: scaleX(0); } to { transform: none; } }
+
+.tt-gantt__espera { color: var(--texto-suave); text-align: right; }
+
+.tt-gantt__promedio {
+  margin-top: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+}
+
+.tt-gantt__promedio strong { font-size: 1.1rem; color: var(--acento); }
+
+/* ---------- Condición de carrera ---------- */
+.tt-carrera__pasos {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.tt-paso {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr auto;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  opacity: 0.25;
+  transition: opacity 400ms ease, transform 500ms var(--ease-expo);
+  transform: translateX(-6px);
+}
+
+.tt-paso[data-op='2'] { margin-left: 1.5rem; }
+.tt-paso.is-hecho { opacity: 1; transform: none; }
+
+.tt-paso__op { font-family: var(--f-mono); font-size: 0.68rem; color: var(--acento); }
+.tt-paso[data-op='2'] .tt-paso__op { color: var(--terracota); }
+.tt-paso__valor { font-family: var(--f-mono); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+
+.tt-carrera__final {
+  margin-top: 0.9rem;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+}
+
+.tt-carrera.is-mal .tt-carrera__final strong { color: var(--fx-rojo); }
+.tt-carrera.is-bien .tt-carrera__final strong { color: var(--fx-verde); }
+
+/* ---------- Sillas del cine ---------- */
+.tt-sillas__fila {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+.tt-silla {
+  padding: 0.5rem 0;
+  border-radius: 6px 6px 3px 3px;
+  background: color-mix(in srgb, var(--texto-suave) 35%, transparent);
+  font-family: var(--f-mono);
+  font-size: 0.56rem;
+  text-align: center;
+  color: var(--fondo);
+}
+
+.tt-silla--libre {
+  background: transparent;
+  border: 1.5px dashed var(--fx-verde);
+  color: var(--fx-verde);
+  transition: background-color 400ms ease, border-color 400ms ease, color 400ms ease;
+}
+
+.tt-silla--libre.is-disputada { animation: fx-latido 0.4s steps(2) 3; }
+.tt-silla--libre.is-candado { border-style: solid; border-color: var(--acento); color: var(--acento); }
+.tt-silla--libre.is-ocupada { background: var(--acento); color: var(--fondo); }
+
+.tt-sillas__compradores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+}
+
+.tt-comprador {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  transition: border-color 400ms ease, opacity 400ms ease;
+}
+
+.tt-comprador span { display: block; color: var(--texto-suave); }
+.tt-comprador.is-gana { border-color: var(--fx-verde); }
+.tt-comprador.is-gana span { color: var(--fx-verde); }
+.tt-comprador.is-pierde { opacity: 0.6; }
+
+/* ---------- Semáforos ---------- */
+.tt-semaforos__par {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.tt-sem {
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+  text-align: center;
+}
+
+.tt-luz {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px;
+  border-radius: 12px;
+  background: #1C1915;
+}
+
+.tt-luz span {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  transition: background-color 300ms ease, box-shadow 300ms ease;
+}
+
+.tt-luz__roja { background: #4A2420; }
+.tt-luz__verde { background: #4FC06A; box-shadow: 0 0 12px #4FC06A; }
+.tt-sem--binario.is-ocupado .tt-luz__roja { background: #E0483B; box-shadow: 0 0 12px #E0483B; }
+.tt-sem--binario.is-ocupado .tt-luz__verde { background: #1F3A26; box-shadow: none; }
+
+.tt-fichas {
+  display: inline-flex;
+  gap: 6px;
+  min-height: 3.2rem;
+  align-items: center;
+}
+
+.tt-fichas span {
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: var(--acento);
+  transition: transform 400ms var(--ease-expo), opacity 400ms ease;
+}
+
+.tt-fichas span.is-usada { opacity: 0.2; transform: translateY(8px) scale(0.8); }
+
+.tt-sem__valor {
+  margin-top: 0.6rem;
+  font-family: var(--f-mono);
+  font-size: 0.9rem;
+}
+
+.tt-sem__texto {
+  font-family: var(--f-mono);
+  font-size: 0.64rem;
+  color: var(--texto-suave);
+}
+
+/* ---------- Interbloqueo ---------- */
+.tt-bloqueo__ciclo { width: min(100%, 26rem); margin: 0 auto; }
+
+.tt-b-nodo rect { fill: var(--fondo); stroke: var(--borde); stroke-width: 1.2; }
+.tt-b-nodo--p rect { stroke: var(--acento); }
+.tt-b-nodo text { fill: var(--texto); font-family: var(--f-serif); font-size: 13px; }
+
+.tt-b-arco {
+  fill: none;
+  stroke: var(--fx-rojo);
+  stroke-width: 1.5;
+  stroke-dasharray: 0.04 0.03;
+  stroke-dashoffset: 0;
+}
+
+.tt-bloqueo.is-activa .tt-b-arco { animation: tt-ronda 1.6s linear infinite; }
+
+@keyframes tt-ronda { to { stroke-dashoffset: -0.07; } }
+
+.tt-b-rotulo { fill: var(--texto-suave); font-family: var(--f-mono); font-size: 9px; }
+
+.tt-bloqueo__reglas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tt-bloqueo__reglas li {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 400ms ease, transform 500ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 200ms + 300ms);
+}
+
+.tt-bloqueo.is-activa .tt-bloqueo__reglas li { opacity: 1; transform: none; }
+
+@media (max-width: 560px) {
+  .tt-gantt__filas li { grid-template-columns: 6.5rem 1fr 3.8rem; }
+  .tt-semaforos__par { grid-template-columns: 1fr; }
+  .tt-sillas__fila { grid-template-columns: repeat(5, 1fr); }
+  .tt-paso[data-op='2'] { margin-left: 0.6rem; }
+}

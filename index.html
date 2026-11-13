@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cuaderno de investigación · Semestre 8</title>
+  <meta name="description" content="Trabajos de investigación de Sistemas operativos y Línea de énfasis II, octavo semestre, Corporación Universitaria Remington.">
+  <meta name="theme-color" content="#0B0C10">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230B0C10'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23E4C88A'/%3E%3Ccircle cx='19.5' cy='13.5' r='7' fill='%230B0C10'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..650;1,9..144,300..500&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/portada.css">
+  <link rel="stylesheet" href="css/materia.css">
+  <link rel="stylesheet" href="css/lector.css">
+</head>
+<body data-vista="portada" data-tema="noche">
+  <a class="saltar" href="#contenido-principal">Saltar al contenido</a>
+
+  <!-- Fondo fijo de estrellas para las vistas de noche -->
+  <div class="firmamento" aria-hidden="true">
+    <div class="estrellas estrellas--1"></div>
+    <div class="estrellas estrellas--2"></div>
+  </div>
+
+  <!-- Velo para las transiciones entre vistas -->
+  <div class="velo" aria-hidden="true"></div>
+
+  <main id="contenido-principal" tabindex="-1">
+
+    <section id="vista-portada" class="vista portada" aria-labelledby="titulo-portada">
+      <div class="cielo" aria-hidden="true">
+        <div class="cielo__base"></div>
+        <div class="cielo__dia"></div>
+        <div class="cielo__noche"></div>
+        <div class="estrellas estrellas--1"></div>
+        <div class="estrellas estrellas--2"></div>
+        <div class="estrellas estrellas--3"></div>
+        <span class="fugaz"></span>
+        <div class="cielo__amanecer"></div>
+      </div>
+
+      <!-- 1. Presentación: título, descripción y video -->
+      <header class="portada__inicio">
+        <div class="portada__barra">
+          <span>Semestre 8 · 2026</span>
+          <span>Corporación Universitaria Remington</span>
+        </div>
+
+        <div class="portada__texto">
+          <p class="ceja">Archivo de investigación</p>
+          <h1 id="titulo-portada" class="portada__titulo">Cuaderno de <em>investigación</em></h1>
+          <p class="portada__descripcion">
+            Once trabajos escritos durante el octavo semestre, reunidos en dos materias.
+            De día, cómo funciona por dentro un sistema operativo. De noche, cómo se protege
+            la información de una empresa frente a los ataques digitales.
+          </p>
+          <p class="portada__firma">Por Stiven Marulanda Chica · Docente Oscar Mahecha Camargo</p>
+        </div>
+
+        <figure class="presentacion" aria-labelledby="presentacion-titulo">
+          <div class="presentacion__pantalla"></div>
+          <figcaption class="presentacion__pie">
+            <span class="ceja">Video de presentación</span>
+            <span id="presentacion-titulo" class="presentacion__titulo">Cómo recorrer este cuaderno</span>
+          </figcaption>
+        </figure>
+
+        <button type="button" class="portada__bajar">
+          <span>Desliza para elegir un astro</span>
+          <span class="portada__bajar-linea" aria-hidden="true"></span>
+        </button>
+      </header>
+
+      <!-- 2. Escena: al hacer scroll, el sol y la luna salen detrás del horizonte -->
+      <section class="escena" aria-labelledby="escena-titulo">
+        <div class="escena__marco">
+          <div class="escena__cabeza">
+            <p class="ceja">Dos materias</p>
+            <h2 id="escena-titulo" class="escena__titulo">¿Día <em>o noche?</em></h2>
+          </div>
+
+          <nav class="astros" aria-label="Materias">
+        <a class="astro astro--sol" href="#/sistemas-operativos" data-astro="sol">
+          <span class="sol" aria-hidden="true">
+            <span class="sol__halo"></span>
+            <span class="sol__rayos"></span>
+            <span class="sol__rayos sol__rayos--2"></span>
+            <span class="sol__nucleo"></span>
+          </span>
+          <span class="astro__nombre">Sistemas operativos</span>
+          <span class="astro__detalle">7 documentos · Día</span>
+        </a>
+
+        <a class="astro astro--luna" href="#/linea-de-enfasis-ii" data-astro="luna">
+          <span class="luna" aria-hidden="true">
+            <span class="luna__halo"></span>
+            <span class="luna__disco"></span>
+            <span class="luna__chispa" style="--x: 6%; --y: 22%; --r: 0s"></span>
+            <span class="luna__chispa" style="--x: 88%; --y: 14%; --r: .4s"></span>
+            <span class="luna__chispa" style="--x: 92%; --y: 70%; --r: .8s"></span>
+            <span class="luna__chispa" style="--x: 10%; --y: 80%; --r: 1.2s"></span>
+          </span>
+          <span class="astro__nombre">Línea de énfasis II</span>
+          <span class="astro__detalle">4 documentos · Noche</span>
+        </a>
+          </nav>
+
+          <!-- Colinas: los astros salen desde detrás de ellas -->
+          <svg class="colinas" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
+            <path class="colinas__lejos" d="M0 120 C160 70 300 90 430 110 C600 135 700 60 860 70 C1010 80 1120 130 1260 105 C1350 90 1400 95 1440 100 V260 H0 Z" />
+            <path class="colinas__cerca" d="M0 170 C180 130 330 150 480 165 C650 182 760 120 930 128 C1100 136 1200 180 1340 160 C1390 153 1420 150 1440 152 V260 H0 Z" />
+          </svg>
+          <span class="escena__horizonte" aria-hidden="true"></span>
+        </div>
+      </section>
+    </section>
+
+    <section id="vista-materia" class="vista" hidden></section>
+
+    <article id="vista-lector" class="vista" hidden></article>
+
+  </main>
+
+  <noscript>
+    <p class="sin-js">Esta página necesita JavaScript para mostrar los documentos. También puedes abrir los archivos originales en la carpeta <code>documentos</code>.</p>
+  </noscript>
+
+  <script src="js/datos.js" defer></script>
+  <script src="js/utilidades.js" defer></script>
+  <script src="js/cielo.js" defer></script>
+  <script src="js/portada.js" defer></script>
+  <script src="js/lector.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+/* ==========================================================
+   Efectos: Análisis de caso · Ransomware en Ecopetrol
+   ========================================================== */
+
+.ac {
+  --rojo: #E0483B;
+  --ambar: #E3A23B;
+  --verde: #86B98A;
+  --nivel: var(--oro);
+}
+
+.ac[data-fase='rojo'] { --nivel: var(--rojo); }
+.ac[data-fase='ambar'] { --nivel: var(--ambar); }
+.ac[data-fase='verde'] { --nivel: var(--verde); }
+
+/* La barra de progreso toma el color de la fase */
+.ac .progreso__barra {
+  background: var(--nivel);
+  transition: background-color 800ms ease;
+}
+
+/* Resplandor rojo detrás del título */
+.ac .lector__cabecera { position: relative; }
+
+.ac .lector__cabecera::before {
+  content: '';
+  position: absolute;
+  inset: 10% -20% 30%;
+  z-index: -1;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(224, 72, 59, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.ac .lector__titulo { font-variant-numeric: tabular-nums; }
+
+/* ---------- Lluvia hexadecimal en los bordes ---------- */
+.ac-lluvia {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  width: max(0px, calc((100vw - 92rem) / 2));
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.09;
+  -webkit-mask: linear-gradient(180deg, transparent, #000 20%, #000 80%, transparent);
+  mask: linear-gradient(180deg, transparent, #000 20%, #000 80%, transparent);
+}
+
+.ac-lluvia--der { left: auto; right: 0; text-align: right; }
+
+.ac-lluvia pre {
+  margin: 0;
+  padding: 0 1.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  letter-spacing: 0.3em;
+  color: var(--oro);
+  animation: lluvia 70s linear infinite;
+}
+
+.ac-lluvia--der pre { animation-duration: 95s; animation-direction: reverse; }
+
+@keyframes lluvia {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+/* ---------- Monitor lateral ---------- */
+.ac-monitor {
+  --c: var(--oro);
+  padding: 1.1rem 1.1rem 1.2rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: rgba(18, 20, 27, 0.75);
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--crema-suave);
+}
+
+.ac-monitor[data-nivel='rojo'] { --c: var(--rojo); }
+.ac-monitor[data-nivel='ambar'] { --c: var(--ambar); }
+.ac-monitor[data-nivel='verde'] { --c: var(--verde); }
+.ac-monitor[data-nivel='calma'] { --c: var(--crema-suave); }
+
+.ac-monitor__cabeza {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--borde);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ac-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+  transition: background-color 600ms ease, box-shadow 600ms ease;
+}
+
+.ac-monitor[data-nivel='rojo'] .ac-led { animation: parpadeo 1s steps(2) infinite; }
+
+@keyframes parpadeo { 50% { opacity: 0.25; } }
+
+.ac-monitor__estado {
+  margin: 0.9rem 0 0.4rem;
+  font-family: var(--f-serif);
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.25;
+  color: var(--c);
+  transition: color 600ms ease;
+}
+
+.ac-escudo {
+  width: 5.5rem;
+  margin: 1rem auto 0.4rem;
+  overflow: visible;
+}
+
+.ac-escudo__capa {
+  fill: var(--oro);
+  opacity: 0.85;
+  transform: scaleY(0);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transition: transform 900ms var(--ease-expo);
+}
+
+.ac-escudo__capa:nth-child(even) { fill: var(--oro-claro); }
+.ac-escudo__capa.is-llena { transform: scaleY(1); }
+
+.ac-escudo__borde {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1.5;
+}
+
+.ac-escudo__texto {
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.ac-escudo__n { color: var(--oro-claro); font-weight: 500; }
+
+.ac-monitor__datos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--borde);
+}
+
+.ac-monitor__datos dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ac-monitor__datos dd {
+  margin: 0.1rem 0 0;
+  font-size: 1.1rem;
+  color: var(--crema);
+  font-variant-numeric: tabular-nums;
+}
+
+.ac-monitor__sub {
+  margin-top: 1rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ac-registro {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ac-registro li {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed rgba(236, 229, 214, 0.08);
+  color: var(--crema);
+  animation: linea-nueva 600ms var(--ease-expo);
+}
+
+.ac-registro li:not(:first-child) { color: var(--crema-suave); }
+.ac-registro li span { color: var(--oro); }
+
+@keyframes linea-nueva {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Alerta ---------- */
+.ac-alerta {
+  display: flex;
+  gap: 1rem;
+  margin: 0 0 1.75rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(224, 72, 59, 0.55);
+  border-left: 4px solid var(--rojo);
+  background: rgba(224, 72, 59, 0.08);
+  font-family: var(--f-mono);
+}
+
+.ac-alerta__luz {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 0.35rem;
+  border-radius: 50%;
+  background: var(--rojo);
+  box-shadow: 0 0 12px var(--rojo);
+  animation: parpadeo 1s steps(2) infinite;
+}
+
+.ac-alerta__titulo {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #F08A80;
+}
+
+.ac-alerta__texto {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--crema);
+}
+
+.ac-alerta.is-activa { animation: sacudida 520ms steps(6) 1; }
+
+@keyframes sacudida {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(1px); }
+}
+
+/* ---------- Simulación de ransomware ---------- */
+.ac-sim {
+  position: relative;
+  margin: 0.5rem 0 2.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--noche-2);
+  font-family: var(--f-mono);
+  overflow: hidden;
+}
+
+.ac-sim__cabeza {
+  margin-bottom: 1rem;
+  font-family: var(--f-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.ac-sim__rotulo {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  font-style: normal;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.ac-sim__archivos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ac-archivo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.74rem;
+  transition: border-color 300ms ease, background-color 300ms ease;
+}
+
+.ac-archivo__icono {
+  width: 0.8rem;
+  height: 1rem;
+  border: 1.5px solid var(--crema-suave);
+  border-radius: 2px;
+  transition: border-color 300ms ease, background-color 300ms ease;
+}
+
+.ac-archivo__nombre {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--crema);
+}
+
+.ac-archivo__estado {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--crema-suave);
+}
+
+.ac-archivo.is-cifrado {
+  border-color: rgba(224, 72, 59, 0.6);
+  background: rgba(224, 72, 59, 0.1);
+}
+
+.ac-archivo.is-cifrado .ac-archivo__icono { border-color: var(--rojo); background: var(--rojo); }
+.ac-archivo.is-cifrado .ac-archivo__nombre,
+.ac-archivo.is-cifrado .ac-archivo__estado { color: #F08A80; }
+
+.ac-archivo.is-salvo { border-color: rgba(201, 165, 92, 0.6); }
+.ac-archivo.is-salvo .ac-archivo__icono { border-color: var(--oro); }
+.ac-archivo.is-salvo .ac-archivo__estado { color: var(--oro); }
+
+.ac-sim__barra {
+  height: 4px;
+  margin: 1rem 0 0.75rem;
+  background: var(--borde);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ac-sim__barra span {
+  display: block;
+  height: 100%;
+  background: var(--rojo);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 500ms var(--ease-expo);
+}
+
+.ac-sim__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ac-sim__estado {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--crema-suave);
+}
+
+.ac-sim.is-bloqueada .ac-sim__estado { color: var(--oro-claro); }
+
+.ac-sim__repetir {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: none;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--rapido) ease, color var(--rapido) ease;
+}
+
+.ac-sim__repetir:hover { border-color: var(--oro); color: var(--oro-claro); }
+
+.ac-sim__sello {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0.5rem 1.2rem;
+  border: 3px double var(--oro);
+  font-size: clamp(1rem, 0.8rem + 1.2vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oro-claro);
+  background: rgba(11, 12, 16, 0.88);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.6);
+  pointer-events: none;
+  transition: opacity 250ms ease, transform 450ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.ac-sim.is-bloqueada .ac-sim__sello {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+}
+
+/* ---------- Cifra de 3.300 cuentas ---------- */
+.ac-cifra {
+  margin: 0 0 2rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--borde);
+  border-bottom: 1px solid var(--borde);
+}
+
+.ac-cifra__num {
+  font-size: clamp(3.5rem, 2rem + 7vw, 6.5rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--oro-claro);
+}
+
+.ac-cifra__texto {
+  margin-top: 0.4rem;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+.ac-cifra__puntos {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 6px;
+  max-width: 20rem;
+  margin-top: 1.25rem;
+}
+
+.ac-cifra__puntos span {
+  aspect-ratio: 1;
+  border: 1px solid var(--borde);
+  border-radius: 2px;
+  transition: background-color 300ms ease, border-color 300ms ease;
+  transition-delay: calc(var(--i) * 45ms);
+}
+
+.ac-cifra.is-activa .ac-cifra__puntos span {
+  background: var(--oro);
+  border-color: var(--oro);
+}
+
+.ac-cifra__leyenda {
+  margin-top: 0.6rem;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+/* ---------- Triada CID ---------- */
+.ac-triada {
+  margin: 0.5rem 0 2.5rem;
+  text-align: center;
+}
+
+.ac-triada svg {
+  width: min(100%, 22rem);
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.ac-triada__lado {
+  fill: rgba(201, 165, 92, 0.05);
+  stroke: var(--oro);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s var(--ease-suave);
+}
+
+.ac-triada.is-activa .ac-triada__lado { stroke-dashoffset: 0; }
+
+.ac-vertice circle { fill: var(--oro); }
+
+.ac-vertice text {
+  fill: var(--crema);
+  font-family: var(--f-serif);
+  font-size: 15px;
+}
+
+.ac-vertice .ac-vertice__estado {
+  fill: var(--oro);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ac-vertice g,
+.ac-vertice {
+  opacity: 0;
+  transition: opacity 600ms ease 900ms;
+}
+
+.ac-triada.is-activa .ac-vertice { opacity: 1; }
+
+.ac-vertice--golpe circle { fill: var(--rojo); }
+.ac-vertice--golpe .ac-vertice__estado { fill: #F08A80; }
+
+.ac-vertice__onda {
+  fill: none !important;
+  stroke: var(--rojo);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onda 2s ease-out infinite;
+}
+
+@keyframes onda {
+  from { transform: scale(0.6); opacity: 1; }
+  to { transform: scale(2.2); opacity: 0; }
+}
+
+.ac-triada figcaption {
+  max-width: 30rem;
+  margin: 0.5rem auto 0;
+  font-size: 0.92rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--texto-suave);
+}
+
+/* ---------- Debilidades ---------- */
+.ac-grietas {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.ac-grietas li {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  overflow: hidden;
+  transition: border-color 500ms ease, color 500ms ease;
+}
+
+/* La grieta: una línea roja que cruza la tarjeta */
+.ac-grietas li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--rojo);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms var(--ease-expo);
+}
+
+.ac-grietas li.is-abierta { border-color: rgba(224, 72, 59, 0.5); }
+.ac-grietas li.is-abierta::after { transform: scaleX(1); }
+
+.ac-grietas__n {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--oro);
+}
+
+.ac-grietas li.is-abierta .ac-grietas__n { color: var(--rojo); }
+
+/* ---------- Marcas de estrategia ---------- */
+.prosa .ac-estrategia {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 2rem 0 0.8rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  hyphens: none;
+}
+
+.ac-estrategia__escudo {
+  flex: none;
+  width: 1.1rem;
+  height: 1.3rem;
+  border: 1.5px solid var(--oro);
+  border-radius: 2px 2px 50% 50% / 2px 2px 60% 60%;
+  background: linear-gradient(var(--oro), var(--oro)) bottom / 100% 0% no-repeat;
+  transition: background-size 900ms var(--ease-expo);
+}
+
+.ac-estrategia.is-activa { color: var(--oro-claro); }
+.ac-estrategia.is-activa .ac-estrategia__escudo { background-size: 100% 100%; }

@@ -1,0 +1,211 @@
+/* Efectos: Taller práctico · Diagnóstico de una pyme */
+
+/* ---------- Mapa lateral ---------- */
+.l2-mapa { --fx-led: var(--oro); }
+.l2-mapa[data-e='a'] { --fx-led: var(--fx-rojo); }
+.l2-mapa[data-e='f'] { --fx-led: var(--fx-ambar); }
+.l2-mapa[data-e='p'] { --fx-led: var(--fx-verde); }
+
+.l2-mapa__svg { width: 100%; margin-top: 0.4rem; overflow: visible; }
+
+.l2-mapa__lineas line {
+  stroke: var(--borde);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.l2-centro rect { fill: var(--fondo); stroke: var(--oro); }
+.l2-centro text { fill: var(--crema); font-family: var(--f-mono); font-size: 8px; }
+
+.l2-activo circle {
+  fill: var(--fondo);
+  stroke: var(--crema-suave);
+  stroke-width: 1.5;
+  transition: fill 500ms ease, stroke 500ms ease;
+}
+
+.l2-activo text { fill: var(--crema-suave); font-family: var(--f-mono); font-size: 8px; }
+
+.l2-activo__marca {
+  fill: none;
+  stroke: var(--noche);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.l2-activo[data-e='a'] circle { fill: var(--fx-rojo); stroke: var(--fx-rojo); animation: fx-latido 1s steps(2) infinite; }
+.l2-activo[data-e='f'] circle { fill: var(--fx-ambar); stroke: var(--fx-ambar); }
+.l2-activo[data-e='p'] circle { fill: var(--fx-verde); stroke: var(--fx-verde); }
+.l2-activo[data-e='p'] .l2-activo__marca { opacity: 1; }
+.l2-activo:not([data-e='n']) text { fill: var(--crema); }
+
+.l2-mapa__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.62rem;
+}
+
+.l2-mapa__leyenda li::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+}
+
+.l2-mapa__leyenda [data-e='a']::before { background: var(--fx-rojo); }
+.l2-mapa__leyenda [data-e='f']::before { background: var(--fx-ambar); }
+.l2-mapa__leyenda [data-e='p']::before { background: var(--fx-verde); }
+
+/* ---------- 3-2-1 ---------- */
+.l2-321__columnas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.l2-321__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms ease, transform 700ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 300ms);
+}
+
+.l2-321.is-activa .l2-321__col { opacity: 1; transform: none; }
+
+.l2-321__n {
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--oro-claro);
+}
+
+.l2-321__t {
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.l2-321__iconos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.l2-copia {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--oro);
+  border-radius: 3px;
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  color: var(--oro-claro);
+}
+
+.l2-copia--fuera { border-style: dashed; }
+
+/* ---------- Acciones gerenciales ---------- */
+.prosa .l2-accion {
+  position: relative;
+  margin-bottom: 0.7em;
+  padding-left: 2.1rem;
+}
+
+.prosa .l2-accion::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.35em;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1.5px solid var(--crema-suave);
+  border-radius: 3px;
+  transition: background-color 400ms ease, border-color 400ms ease;
+}
+
+.prosa .l2-accion::after {
+  content: '';
+  position: absolute;
+  left: 0.48rem;
+  top: 0.45em;
+  width: 0.3rem;
+  height: 0.6rem;
+  border: solid var(--noche);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 400ms var(--ease-expo) 150ms;
+}
+
+.prosa .l2-accion.is-activa::before { background: var(--fx-verde); border-color: var(--fx-verde); }
+.prosa .l2-accion.is-activa::after { transform: rotate(45deg) scale(1); }
+
+/* ---------- Verificación en dos pasos ---------- */
+.l2-mfa__pasos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: 0.68rem;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+.l2-mfa__pasos li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  opacity: 0.3;
+  transition: opacity 500ms ease;
+  transition-delay: calc(var(--i) * 700ms + 200ms);
+}
+
+.l2-mfa.is-activa .l2-mfa__pasos li { opacity: 1; }
+
+.l2-mfa__caja {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 2.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--fondo);
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: var(--crema);
+}
+
+.l2-mfa__codigo { border-color: var(--oro); color: var(--oro-claro); }
+
+.l2-mfa__ok {
+  border-color: var(--fx-verde);
+  background: color-mix(in srgb, var(--fx-verde) 20%, var(--fondo));
+  color: var(--fx-verde);
+  font-size: 1.3rem;
+}
+
+@media (max-width: 560px) {
+  .l2-321__columnas { grid-template-columns: 1fr; }
+}

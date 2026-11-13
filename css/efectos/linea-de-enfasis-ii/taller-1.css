@@ -1,0 +1,157 @@
+/* Efectos: Taller 1 · Fundamentos de ciberseguridad */
+
+/* ---------- Constelación ---------- */
+.t1-constelacion { width: 100%; max-width: 12rem; margin: 0.5rem auto 0; overflow: visible; }
+
+.t1-trazo {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 1;
+  stroke-opacity: 0.6;
+  stroke-linejoin: round;
+  transition: fill 1s ease;
+}
+
+.t1-cielo.is-completa .t1-trazo { fill: rgba(201, 165, 92, 0.1); stroke-opacity: 1; }
+
+.t1-estrella {
+  fill: var(--borde);
+  transition: fill 500ms ease, r 500ms ease;
+}
+
+.t1-estrella.is-encendida {
+  fill: var(--oro-claro);
+  filter: drop-shadow(0 0 4px rgba(228, 200, 138, 0.9));
+}
+
+.t1-estrella.is-actual { r: 5; animation: fx-latido 2s ease-in-out infinite; }
+
+/* ---------- Tres amenazas ---------- */
+.t1-amenazas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.6rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.t1-amenazas li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--fx-superficie);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--texto-suave);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms ease, transform 700ms var(--ease-expo), border-color 400ms ease;
+  transition-delay: calc(var(--i) * 180ms);
+}
+
+.t1-amenazas.is-activa li { opacity: 1; transform: none; }
+.t1-amenazas li:hover { border-color: var(--fx-rojo); }
+
+.t1-amenazas svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: var(--fx-rojo);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.t1-amenazas strong { font-size: 1.05rem; font-weight: 450; color: var(--texto); }
+
+/* ---------- Triada ---------- */
+.t1-triada { text-align: center; }
+.t1-triada svg { width: min(100%, 20rem); margin: 0 auto; overflow: visible; }
+
+.t1-triada__lado {
+  fill: rgba(201, 165, 92, 0.05);
+  stroke: var(--oro);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s var(--ease-suave) 600ms;
+}
+
+.t1-triada.is-activa .t1-triada__lado { stroke-dashoffset: 0; }
+
+.t1-vertice {
+  opacity: 0;
+  transition: opacity 500ms ease;
+  transition-delay: calc(var(--i) * 250ms);
+}
+
+.t1-triada.is-activa .t1-vertice { opacity: 1; }
+.t1-vertice circle { fill: var(--oro-claro); filter: drop-shadow(0 0 6px rgba(228, 200, 138, 0.9)); }
+.t1-vertice text { fill: var(--crema); font-family: var(--f-serif); font-size: 15px; }
+
+.t1-triada figcaption {
+  max-width: 28rem;
+  margin: 0.4rem auto 0;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+/* ---------- Conceptos e impactos ---------- */
+.t1-conceptos__lista,
+.t1-impactos {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.t1-conceptos__lista { grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); }
+
+.t1-conceptos__lista li,
+.t1-impactos li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--texto-suave);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 500ms ease, transform 600ms var(--ease-expo);
+  transition-delay: calc(var(--i) * 220ms);
+}
+
+.t1-conceptos__lista li { position: relative; }
+
+.t1-conceptos__lista li:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--oro);
+  font-family: var(--f-mono);
+}
+
+.t1-conceptos__lista strong,
+.t1-impactos strong { font-size: 1.05rem; font-weight: 450; color: var(--texto); }
+
+.t1-conceptos__lista li:last-child { border-color: color-mix(in srgb, var(--fx-rojo) 60%, transparent); }
+
+.t1-impactos { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin-bottom: 2rem; }
+
+.t1-conceptos.is-activa li,
+.t1-impactos.is-activa li { opacity: 1; transform: none; }
+
+@media (max-width: 560px) {
+  .t1-conceptos__lista li::after { display: none; }
+}
