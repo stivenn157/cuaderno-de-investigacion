@@ -182,7 +182,8 @@
 
   function fichaHtml(materia, doc, i) {
     const giro = GIROS[i % GIROS.length];
-    const coautores = doc.coautores.length ? `Con ${doc.coautores.map(escapar).join(', ')}` : '';
+    // En la ficha solo aparece el autor principal; los coautores se ven dentro del documento
+    const autor = `Por ${escapar(datos.sitio.autor)}`;
     return `
       <li class="ficha revelar" style="--giro: ${giro}deg; --retraso: ${i * 90}ms">
         <article class="ficha__papel">
@@ -194,7 +195,7 @@
           <h2 class="ficha__titulo">${escapar(doc.titulo)}</h2>
           <p class="ficha__resumen">${escapar(doc.resumen)}</p>
           <footer class="ficha__pie">
-            <span class="ficha__autores">${coautores}</span>
+            <span class="ficha__autores">${autor}</span>
             <a class="ficha__leer" href="#/${materia.id}/${doc.id}">
               Leer más<span class="solo-lector">: ${escapar(doc.tipo)}, ${escapar(doc.titulo)}</span>
               <span class="ficha__flecha" aria-hidden="true">→</span>
