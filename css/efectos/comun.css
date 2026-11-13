@@ -379,3 +379,25 @@ body[data-tema='noche'] .lector--especial { --fx-verde: #86B98A; --fx-ambar: #E3
 }
 
 @keyframes fx-girar { to { transform: rotate(360deg); } }
+
+/* ---------- Celular: ningún texto de las figuras por debajo de ~11 px ---------- */
+@media (max-width: 560px) {
+  .lector--especial :is(
+    .fx-nota, .fx-rotulo, .fx-panel__sub, .fx-paso, .fx-boton,
+    .ac-archivo__estado, .ac-monitor__datos dt, .ac-registro li,
+    .pp-plan__texto, .pp-plan__escala, .l2-copia, .l2-mapa__leyenda,
+    .a1-funciones__n, .a1-capa__detalle, .a1-enlace span,
+    .ap-virtual__dato, .ap-proceso,
+    .p1-umbral__nota, .p1-umbral__nombre, .p1-nodo__detalle, .p1-ticket__id,
+    .tp-nucleo__n, .tp-bus__rotulo, .tp-ddr__datos, .tp-vram__rotulo small,
+    .m4-capa__n, .m4-datos dt, .m4-antes__srv, .m4-carril__rotulo, .m4-carril__estado, .m4-bd,
+    .tt-sem__texto, .tt-gantt__filas, .tt-paso__op, .tt-comprador,
+    .d4-equipo, .d4-una__velo, .d4-srv__estado, .d4-super__rotulo, .d4-super__pend, .d4-nodos span,
+    .d4-mat__carga, .d4-mat__cabeza, .d4-tcp__lista, .d4-seq__actores span
+  ) {
+    font-size: max(0.7rem, 11px);
+  }
+
+  .fx-figura { padding: 1rem; }
+  .fx-figura__cabeza { font-size: 1rem; }
+}

@@ -111,6 +111,16 @@ body::after {
   mix-blend-mode: multiply;
 }
 
+/* En celulares y pantallas táctiles el grano se omite: ahorra batería y evita tirones al hacer scroll */
+@media (max-width: 860px), (hover: none) {
+  body::after { display: none; }
+}
+
+/* Áreas táctiles cómodas para los enlaces de regreso */
+@media (max-width: 860px) {
+  .migas a { min-height: 2.75rem; }
+}
+
 body[data-tema='noche']::after {
   opacity: 0.07;
   mix-blend-mode: screen;
@@ -142,6 +152,10 @@ button {
 [hidden] { display: none !important; }
 
 main:focus { outline: none; }
+
+/* Nada puede ensanchar la página de lado: en celular eso la "aleja" y descuadra.
+   clip (a diferencia de hidden) no rompe los elementos fijos ni los sticky. */
+main { overflow-x: clip; }
 
 /* ---------- Utilidades ---------- */
 .saltar {

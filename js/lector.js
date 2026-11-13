@@ -54,20 +54,32 @@
         </header>
 
         <div class="lector__cuerpo">
-          <aside class="lector__indice" aria-label="Índice del documento">
-            <p class="ceja">Índice</p>
+          <aside class="lector__indice" id="hoja-indice" aria-label="Índice del documento">
+            <div class="hoja__barra"><p class="ceja">Índice</p><button type="button" class="hoja__cerrar" data-cerrar>Cerrar</button></div>
             <ol class="indice"></ol>
           </aside>
           <div class="prosa" aria-busy="true">
             <p class="lector__cargando">Abriendo el documento…</p>
           </div>
-          <aside class="lector__panel" aria-label="Elementos visuales del documento"></aside>
+          <aside class="lector__panel" id="hoja-panel" aria-label="Elementos visuales del documento"></aside>
         </div>
 
         <nav class="lector__vecinos" aria-label="Otros documentos">
           ${vecinoHtml(materia, docs[indice - 1], '← Anterior', 'vecino--anterior')}
           ${vecinoHtml(materia, docs[indice + 1], 'Siguiente →', 'vecino--siguiente')}
         </nav>
+
+        <!-- Celulares y tablets: el índice y el panel se abren desde esta barra -->
+        <div class="dock" role="toolbar" aria-label="Herramientas de lectura">
+          <button type="button" class="dock__boton dock__boton--indice" data-hoja="indice" aria-controls="hoja-indice" aria-expanded="false">
+            <span class="dock__icono" aria-hidden="true"><i></i><i></i><i></i></span> Índice
+          </button>
+          <button type="button" class="dock__boton dock__boton--panel" data-hoja="panel" aria-controls="hoja-panel" aria-expanded="false">
+            <span class="dock__led" aria-hidden="true"></span><span class="dock__estado">Panel</span>
+            <span class="dock__flecha" aria-hidden="true">↑</span>
+          </button>
+        </div>
+        <div class="hoja__fondo" data-cerrar aria-hidden="true"></div>
       </div>`;
   }
 
@@ -257,7 +269,75 @@
 
     // Se aplica al final para incluir los bloques que agregan los efectos
     limpiezas.push(revelarBloques(prosa));
+    limpiezas.push(prepararHojas(raiz));
     return limpiar;
+  }
+
+  /* ---------- Celular y tablet: índice y panel como hojas deslizables ---------- */
+
+  function prepararHojas(raiz) {
+    const panel = raiz.querySelector('.lector__panel');
+    const indice = raiz.querySelector('.lector__indice');
+    const botones = [...raiz.querySelectorAll('.dock__boton')];
+    const estadoDock = raiz.querySelector('.dock__estado');
+    const ledDock = raiz.querySelector('.dock__led');
+
+    const sinIndice = indice.hidden;
+    const sinPanel = panel.hidden || !panel.firstElementChild;
+    raiz.querySelector('.dock__boton--indice').hidden = sinIndice;
+    raiz.querySelector('.dock__boton--panel').hidden = sinPanel;
+    raiz.querySelector('.dock').hidden = sinIndice && sinPanel;
+
+    if (!sinPanel) {
+      panel.insertAdjacentHTML('afterbegin',
+        '<div class="hoja__barra"><p class="ceja">Panel del documento</p><button type="button" class="hoja__cerrar" data-cerrar>Cerrar</button></div>');
+    }
+
+    let abierta = '';
+    const marcar = (nombre) => {
+      abierta = nombre;
+      raiz.dataset.hoja = nombre;
+      botones.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.hoja === nombre)));
+    };
+
+    const alClic = (evento) => {
+      const boton = evento.target.closest('[data-hoja]');
+      if (boton) {
+        marcar(abierta === boton.dataset.hoja ? '' : boton.dataset.hoja);
+        return;
+      }
+      // Cerrar con el botón, el fondo o al elegir un título del índice
+      if (evento.target.closest('[data-cerrar]') || (abierta === 'indice' && evento.target.closest('[data-ir]'))) marcar('');
+    };
+    const alTecla = (evento) => {
+      if (evento.key === 'Escape' && abierta) marcar('');
+    };
+    raiz.addEventListener('click', alClic);
+    document.addEventListener('keydown', alTecla);
+
+    // La barra muestra en vivo el estado del panel (por ejemplo, "Intrusión detectada")
+    const fuente = panel.querySelector('.fx-panel__estado, .ac-monitor__estado');
+    const cabeza = panel.querySelector('.fx-panel__cabeza, .ac-monitor__cabeza');
+    const luz = panel.querySelector('.fx-led, .ac-led');
+    let reloj;
+    const copiar = () => {
+      if (fuente) estadoDock.textContent = fuente.textContent.trim();
+      else if (cabeza) estadoDock.textContent = cabeza.textContent.trim();
+      if (luz) ledDock.style.background = getComputedStyle(luz).backgroundColor;
+    };
+    copiar();
+    const observador = new MutationObserver(() => {
+      copiar();
+      clearTimeout(reloj);
+      reloj = setTimeout(copiar, 650); // el color del LED cambia con una transición
+    });
+    if (fuente) observador.observe(fuente, { childList: true, characterData: true, subtree: true });
+
+    return () => {
+      observador.disconnect();
+      clearTimeout(reloj);
+      document.removeEventListener('keydown', alTecla);
+    };
   }
 
   window.Pagina.lector = Object.freeze({ mostrar });

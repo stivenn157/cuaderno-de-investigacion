@@ -332,7 +332,8 @@
     });
 
     // Lluvia hexadecimal en los bordes (solo pantallas anchas, sin movimiento reducido)
-    if (!reducido) {
+    // En celulares y portátiles no hay márgenes libres: ni siquiera se crea
+    if (!reducido && window.matchMedia('(min-width: 1481px)').matches) {
       const izq = crear(lluviaHtml());
       const der = crear(lluviaHtml());
       der.classList.add('ac-lluvia--der');

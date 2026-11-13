@@ -304,3 +304,8 @@
   .tp-ddr { grid-template-columns: 1fr; gap: 0.5rem; }
   .tp-vram__fila { grid-template-columns: 1fr; gap: 0.3rem; }
 }
+
+/* Sin márgenes laterales libres, las pistas de circuito no se dibujan */
+@media (max-width: 1290px) {
+  .tp-circuito { display: none; }
+}

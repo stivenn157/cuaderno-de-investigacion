@@ -25,7 +25,7 @@
 .ac .lector__cabecera::before {
   content: '';
   position: absolute;
-  inset: 10% -20% 30%;
+  inset: 10% 0 30%;
   z-index: -1;
   background: radial-gradient(50% 50% at 50% 50%, rgba(224, 72, 59, 0.16), transparent 70%);
   pointer-events: none;
@@ -610,3 +610,20 @@
 
 .ac-estrategia.is-activa { color: var(--oro-claro); }
 .ac-estrategia.is-activa .ac-estrategia__escudo { background-size: 100% 100%; }
+
+/* Celular: el sello cabe dentro de la simulación */
+@media (max-width: 560px) {
+  .ac-sim__sello {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    padding: 0.45rem 0.8rem;
+  }
+
+  .ac-archivo { grid-template-columns: auto minmax(0, 1fr) auto; }
+}
+
+/* La lluvia solo existe donde hay márgenes laterales libres; si no, ni se dibuja
+   (en celular su texto se salía de la pantalla y ensanchaba la página) */
+@media (max-width: 1480px) {
+  .ac-lluvia { display: none; }
+}

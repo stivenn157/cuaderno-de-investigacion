@@ -592,8 +592,28 @@
 @media (max-width: 640px) {
   .portada__barra span:last-child { display: none; }
   .portada__barra { justify-content: center; }
-  .astros { --d: clamp(104px, 34vw, 140px); bottom: 20vh; }
-  .astro__detalle { letter-spacing: 0.1em; }
+  .astros { --d: clamp(112px, 36vw, 156px); bottom: 22vh; }
+  .astro { padding: 0.5rem 0.25rem; }
+  .astro__nombre { font-size: 1.15rem; }
+  .astro__detalle { font-size: 0.64rem; letter-spacing: 0.08em; text-align: center; }
   .colinas { height: 24vh; }
+  .escena__marco { padding-top: clamp(4.5rem, 15vh, 8rem); }
   .presentacion__pantalla { border-radius: 10px; }
+  .presentacion__aviso { font-size: 0.66rem; letter-spacing: 0.1em; max-width: 16rem; }
+  .portada__bajar { margin-top: 2.5rem; }
+}
+
+/* Celular en horizontal y pantallas muy bajas */
+@media (max-height: 520px) and (orientation: landscape) {
+  .portada__inicio { min-height: auto; }
+  .portada__texto { margin: 1.5rem auto; }
+  .portada__titulo { font-size: clamp(2.2rem, 7vh + 1rem, 3.2rem); }
+  .portada__titulo em { display: inline; }
+  .presentacion { width: min(100%, 34rem); }
+  .escena__marco { padding-top: 1rem; }
+  .escena__cabeza .ceja { display: none; }
+  .escena__titulo { margin-top: 0; font-size: 2rem; }
+  .astros { --d: 30vh; bottom: 16vh; width: min(36rem, 100% - 2 * var(--margen)); }
+  .astro__nombre { margin-top: 0.2rem; font-size: 1rem; }
+  .colinas { height: 22vh; }
 }
