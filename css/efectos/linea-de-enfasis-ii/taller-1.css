@@ -155,3 +155,130 @@
 @media (max-width: 560px) {
   .t1-conceptos__lista li::after { display: none; }
 }
+
+/* ---------- Estrategia: gasto frente a estrategia ---------- */
+.t1-vision__cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem;
+  align-items: stretch;
+  gap: 1.2rem;
+}
+
+.t1-vision__lista {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.t1-vision__lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  animation: t1-entra 500ms var(--ease-expo) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+.t1-vision__lista li::before {
+  content: '×';
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--fx-rojo);
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+}
+
+.t1-vision[data-vision='estrategia'] .t1-vision__lista li { border-color: color-mix(in srgb, var(--fx-verde) 50%, transparent); }
+.t1-vision[data-vision='estrategia'] .t1-vision__lista li::before { content: '✓'; background: var(--fx-verde); }
+
+@keyframes t1-entra {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.t1-vision__medidor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--f-mono);
+  font-size: 0.66rem;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+.t1-vision__barra {
+  position: relative;
+  flex: 1;
+  width: 2.2rem;
+  min-height: 7rem;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.t1-vision__barra span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--fx-verde), var(--fx-ambar) 55%, var(--fx-rojo));
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 900ms var(--ease-expo);
+}
+
+.t1-vision__valor { color: var(--texto); }
+
+/* ---------- Plan de negocio ---------- */
+.t1-plan__servicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.t1-plan__servicios li {
+  padding: 0.75rem 0.8rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  opacity: 0.25;
+  transform: translateY(8px);
+  transition: opacity 500ms ease, transform 600ms var(--ease-expo), border-color 500ms ease;
+  transition-delay: calc(var(--i) * 160ms);
+}
+
+.t1-plan.is-activa .t1-plan__servicios li { opacity: 1; transform: none; border-color: color-mix(in srgb, var(--oro) 60%, transparent); }
+
+.t1-plan__ingresos { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.t1-plan__modo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.8rem 0.9rem;
+  border-left: 3px solid var(--borde);
+  border-radius: 4px;
+  background: var(--fondo);
+  font-size: 0.9rem;
+}
+
+.t1-plan__modo span { color: var(--texto-suave); }
+.t1-plan__modo--mensual { border-left-color: var(--oro); }
+
+@media (max-width: 560px) {
+  .t1-vision__cuerpo { grid-template-columns: minmax(0, 1fr) 4.5rem; }
+  .t1-plan__ingresos { grid-template-columns: 1fr; }
+}

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/portada.css">
   <link rel="stylesheet" href="css/materia.css">
   <link rel="stylesheet" href="css/lector.css">
+  <link rel="stylesheet" href="css/aula.css">
 </head>
 <body data-vista="portada" data-tema="noche">
   <a class="saltar" href="#contenido-principal">Saltar al contenido</a>
@@ -28,6 +29,10 @@
   <div class="velo" aria-hidden="true"></div>
 
   <main id="contenido-principal" tabindex="-1">
+
+    <!-- Barra de cada materia: marca y menú de secciones (se llena desde js/vistas.js) -->
+    <header id="aula-marca" class="aula-marca" hidden></header>
+    <div id="aula-nav" class="aula-nav" hidden></div>
 
     <section id="vista-portada" class="vista portada" aria-labelledby="titulo-portada">
       <div class="cielo" aria-hidden="true">
@@ -90,7 +95,7 @@
             <span class="sol__nucleo"></span>
           </span>
           <span class="astro__nombre">Sistemas operativos</span>
-          <span class="astro__detalle">7 documentos · Día</span>
+          <span class="astro__detalle">4 temas · 3 casos · Día</span>
         </a>
 
         <a class="astro astro--luna" href="#/linea-de-enfasis-ii" data-astro="luna">
@@ -103,7 +108,7 @@
             <span class="luna__chispa" style="--x: 10%; --y: 80%; --r: 1.2s"></span>
           </span>
           <span class="astro__nombre">Línea de énfasis II</span>
-          <span class="astro__detalle">4 documentos · Noche</span>
+          <span class="astro__detalle">4 temas · 3 casos · Noche</span>
         </a>
           </nav>
 
@@ -124,13 +129,17 @@
   </main>
 
   <noscript>
-    <p class="sin-js">Esta página necesita JavaScript para mostrar los documentos. También puedes abrir los archivos originales en la carpeta <code>documentos</code>.</p>
+    <p class="sin-js">Esta página necesita JavaScript para mostrar los temas y los casos. También puedes abrir los archivos originales en la carpeta <code>documentos</code>.</p>
   </noscript>
 
   <script src="js/datos.js" defer></script>
+  <script src="js/secciones.js" defer></script>
   <script src="js/utilidades.js" defer></script>
   <script src="js/cielo.js" defer></script>
+  <script src="js/video.js" defer></script>
   <script src="js/portada.js" defer></script>
+  <script src="js/vistas.js" defer></script>
+  <script src="js/destacados.js" defer></script>
   <script src="js/lector.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>

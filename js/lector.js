@@ -1,72 +1,111 @@
 /*
- * Lector de documentos: carga el contenido convertido del Word, arma el índice,
- * la barra de progreso y las apariciones al hacer scroll. Si el documento tiene
- * efectos propios (datos.js -> efectos: true) también los carga, solo para él.
+ * Lector de resúmenes: muestra el resumen de un tema o de un caso práctico,
+ * arma el índice, la barra de progreso y las apariciones al hacer scroll,
+ * y carga las animaciones propias del documento del que sale el resumen.
  */
 (function () {
   'use strict';
 
-  const { datos, util } = window.Pagina;
+  const { datos, secciones, util } = window.Pagina;
   const { escapar, formatoFecha, dosDigitos } = util;
   const PALABRAS_POR_MINUTO = 200;
+  const NOMBRE = { temas: 'Tema', casos: 'Caso práctico' };
+  const SECCION = { temas: 'Temas', casos: 'Casos prácticos' };
 
   window.Efectos = window.Efectos || {};
+  window.Resumenes = window.Resumenes || {};
 
   /* ---------- Plantilla ---------- */
 
-  function vecinoHtml(materia, doc, rotulo, clase) {
-    if (!doc) return '<span></span>';
+  function vecinoHtml(materia, seccion, entrada, numero, rotulo, clase) {
+    if (!entrada) return '<span></span>';
     return `
-      <a class="vecino ${clase}" href="#/${materia.id}/${doc.id}">
+      <a class="vecino ${clase}" href="#/${materia.id}/${seccion}/${entrada.id}">
         <span class="ceja">${rotulo}</span>
-        <span class="vecino__titulo">${escapar(doc.tipo)}: ${escapar(doc.titulo)}</span>
+        <span class="vecino__titulo">${NOMBRE[seccion]} ${dosDigitos(numero)}: ${escapar(entrada.titulo)}</span>
       </a>`;
   }
 
-  function plantilla(materia, doc, indice) {
-    const autores = [datos.sitio.autor, ...doc.coautores].map(escapar).join('<br>');
-    const docs = materia.documentos;
-    const ruta = `documentos/${materia.id}/${encodeURIComponent(doc.archivo)}`;
+  /** Bloque bajo la cabecera: "Lo esencial" en los temas y los tres pasos en los casos. */
+  function bloqueClave(seccion, entrada) {
+    if (seccion === 'casos') {
+      const pasos = window.Pagina.vistas.PASOS.map(([clave, nombre], i) => `
+        <li class="caso-paso revelar" style="--retraso: ${i * 120}ms">
+          <button type="button" class="caso-paso__boton" data-ir="p${i + 1}">
+            <span class="caso-paso__n">0${i + 1}</span>
+            <strong>${nombre}</strong>
+            <span>${escapar(entrada.pasos[clave])}</span>
+            <span class="caso-paso__ir">Ir a esta parte ↓</span>
+          </button>
+        </li>`).join('');
+      return `
+        <section class="clave" aria-labelledby="clave-titulo">
+          <h2 id="clave-titulo" class="ceja clave__titulo">El caso en tres pasos</h2>
+          <ol class="caso-pasos caso-pasos--grande">${pasos}</ol>
+        </section>`;
+    }
+    const puntos = entrada.esencial.map((t, i) => `
+      <li class="esencial__punto revelar" style="--retraso: ${i * 100}ms">
+        <span class="esencial__n">0${i + 1}</span><p>${escapar(t)}</p>
+      </li>`).join('');
     return `
-      <div class="lector${doc.efectos ? ' lector--especial' : ''}">
+      <section class="clave" aria-labelledby="clave-titulo">
+        <h2 id="clave-titulo" class="ceja clave__titulo">Lo esencial</h2>
+        <ol class="esencial">${puntos}</ol>
+      </section>`;
+  }
+
+  function plantilla({ materia, seccion, entrada, indice }) {
+    const doc = window.Pagina.vistas.documentoDe(materia, entrada.documento);
+    const autores = [datos.sitio.autor, ...doc.coautores].map(escapar).join('<br>');
+    const lista = secciones[materia.id][seccion];
+    const descarga = window.Pagina.vistas.enlaceDescarga(materia, doc);
+    const sub = seccion === 'casos' ? escapar(entrada.empresa) : entrada.etiquetas.map(escapar).join(' · ');
+    return `
+      <div class="lector lector--especial lector--${seccion}">
         <div class="progreso" aria-hidden="true"><span class="progreso__barra"></span></div>
 
         <nav class="migas lector__migas" aria-label="Ruta">
-          <a href="#/">Cielo</a>
-          <span aria-hidden="true">/</span>
-          <a href="#/${materia.id}"><span class="flecha" aria-hidden="true">←</span> ${escapar(materia.nombre)}</a>
+          <a href="#/${materia.id}/${seccion}"><span class="flecha" aria-hidden="true">←</span> Volver a ${SECCION[seccion]}</a>
         </nav>
 
         <header class="lector__cabecera">
-          <p class="ceja">${escapar(materia.nombre)} · Ficha N.º ${dosDigitos(indice + 1)}</p>
-          <p class="lector__tipo">${escapar(doc.tipo)}</p>
-          <h1 class="lector__titulo">${escapar(doc.titulo)}</h1>
-          <p class="lector__resumen">${escapar(doc.resumen)}</p>
+          <p class="ceja">${NOMBRE[seccion]} ${dosDigitos(indice + 1)} · ${escapar(materia.nombre)}</p>
+          <p class="lector__tipo">${sub}</p>
+          <h1 class="lector__titulo">${escapar(entrada.titulo)}</h1>
+          <p class="lector__resumen">${escapar(entrada.resumen)}</p>
           <dl class="lector__meta">
             <div><dt>Autores</dt><dd>${autores}</dd></div>
             <div><dt>Docente</dt><dd>${escapar(datos.sitio.docente)}</dd></div>
-            <div><dt>Fecha</dt><dd><time datetime="${doc.fecha}">${formatoFecha(doc.fecha)}</time></dd></div>
+            <div><dt>Fuente</dt><dd>${escapar(doc.tipo)}<br><time datetime="${doc.fecha}">${formatoFecha(doc.fecha)}</time></dd></div>
             <div><dt>Lectura</dt><dd class="lector__minutos">…</dd></div>
           </dl>
-          <a class="boton lector__descarga" href="${ruta}" download>
-            <span aria-hidden="true">↓</span> Descargar el original (.docx)
+          <a class="boton lector__descarga" href="${descarga}" download>
+            <span aria-hidden="true">↓</span> Descargar el documento completo (.docx)
           </a>
         </header>
 
+        ${bloqueClave(seccion, entrada)}
+
         <div class="lector__cuerpo">
-          <aside class="lector__indice" id="hoja-indice" aria-label="Índice del documento">
+          <aside class="lector__indice" id="hoja-indice" aria-label="Índice del resumen">
             <div class="hoja__barra"><p class="ceja">Índice</p><button type="button" class="hoja__cerrar" data-cerrar>Cerrar</button></div>
             <ol class="indice"></ol>
           </aside>
           <div class="prosa" aria-busy="true">
-            <p class="lector__cargando">Abriendo el documento…</p>
+            <p class="lector__cargando">Abriendo el resumen…</p>
           </div>
-          <aside class="lector__panel" id="hoja-panel" aria-label="Elementos visuales del documento"></aside>
+          <aside class="lector__panel" id="hoja-panel" aria-label="Elementos visuales del resumen"></aside>
         </div>
 
-        <nav class="lector__vecinos" aria-label="Otros documentos">
-          ${vecinoHtml(materia, docs[indice - 1], '← Anterior', 'vecino--anterior')}
-          ${vecinoHtml(materia, docs[indice + 1], 'Siguiente →', 'vecino--siguiente')}
+        <aside class="lector__cierre">
+          <p>¿Quieres leer el trabajo completo, con todas sus citas y referencias?</p>
+          <a class="boton boton--lleno" href="${descarga}" download><span aria-hidden="true">↓</span> Descargar ${escapar(doc.tipo)} (.docx)</a>
+        </aside>
+
+        <nav class="lector__vecinos" aria-label="Otros ${SECCION[seccion].toLowerCase()}">
+          ${vecinoHtml(materia, seccion, lista[indice - 1], indice, '← Anterior', 'vecino--anterior')}
+          ${vecinoHtml(materia, seccion, lista[indice + 1], indice + 2, 'Siguiente →', 'vecino--siguiente')}
         </nav>
 
         <!-- Celulares y tablets: el índice y el panel se abren desde esta barra -->
@@ -191,8 +230,7 @@
     return util.alAparecer(bloques, (b) => b.classList.add('is-visible'));
   }
 
-  async function iniciarEfectos(materia, doc, raiz, prosa) {
-    const clave = `${materia.id}/${doc.id}`;
+  async function iniciarEfectos(clave, raiz, prosa) {
     try {
       await Promise.all([util.cargarEstilo('css/efectos/comun.css'), util.cargarScript('js/efectos/comun.js')]);
       await Promise.all([
@@ -209,21 +247,33 @@
       });
       return typeof detener === 'function' ? detener : () => {};
     } catch (error) {
-      // Sin efectos el documento se sigue leyendo con normalidad
-      console.warn('Efectos no disponibles para', clave, error);
+      // Sin animaciones el resumen se sigue leyendo con normalidad
+      console.warn('Animaciones no disponibles para', clave, error);
       return () => {};
     }
   }
 
+  /** Los tres pasos del caso llevan a su parte del resumen. */
+  function irAPartes(raiz) {
+    const alClic = (e) => {
+      const boton = e.target.closest('.clave [data-ir]');
+      if (!boton) return;
+      const destino = raiz.querySelector(`#${boton.dataset.ir}`);
+      if (destino) destino.scrollIntoView({ behavior: util.movimientoReducido() ? 'auto' : 'smooth', block: 'start' });
+    };
+    raiz.addEventListener('click', alClic);
+    return () => raiz.removeEventListener('click', alClic);
+  }
+
   /* ---------- API ---------- */
 
-  async function mostrar(contenedor, materia, indice) {
-    const doc = materia.documentos[indice];
-    const clave = `${materia.id}/${doc.id}`;
+  async function mostrar(contenedor, ruta) {
+    const { materia, seccion, entrada } = ruta;
+    const clave = `${materia.id}/${seccion}/${entrada.id}`;
     const limpiezas = [];
     let activo = true;
 
-    contenedor.innerHTML = plantilla(materia, doc, indice);
+    contenedor.innerHTML = plantilla(ruta);
     const raiz = contenedor.querySelector('.lector');
     const prosa = raiz.querySelector('.prosa');
 
@@ -231,6 +281,7 @@
     const titulo = raiz.querySelector('.lector__titulo');
     util.partirPalabras(titulo);
     requestAnimationFrame(() => requestAnimationFrame(() => titulo.classList.add('titulo-visible')));
+    limpiezas.push(util.alAparecer([...raiz.querySelectorAll('.clave .revelar')], (b) => b.classList.add('is-visible')));
 
     const limpiar = () => {
       activo = false;
@@ -238,15 +289,15 @@
     };
 
     try {
-      await util.cargarScript(`js/contenido/${clave}.js`);
+      await util.cargarScript(`js/resumenes/${clave}.js`);
     } catch (error) {
-      prosa.innerHTML = `<p>No se pudo abrir el contenido de este documento. Puedes <a href="documentos/${materia.id}/${encodeURIComponent(doc.archivo)}" download>descargar el archivo original</a>.</p>`;
+      prosa.innerHTML = '<p>No se pudo abrir este resumen. Puedes descargar el documento completo con el botón de arriba.</p>';
       prosa.removeAttribute('aria-busy');
       return limpiar;
     }
     if (!activo) return limpiar;
 
-    prosa.innerHTML = (window.Contenido && window.Contenido[clave]) || '<p>Este documento está vacío.</p>';
+    prosa.innerHTML = window.Resumenes[clave] || '<p>Este resumen está vacío.</p>';
     prosa.removeAttribute('aria-busy');
 
     const palabras = prosa.textContent.trim().split(/\s+/).length;
@@ -255,17 +306,14 @@
     prepararTitulos(prosa);
     limpiezas.push(construirIndice(raiz, prosa));
     limpiezas.push(seguirProgreso(raiz, prosa));
+    limpiezas.push(irAPartes(raiz));
 
-    if (doc.efectos) {
-      const detener = await iniciarEfectos(materia, doc, raiz, prosa);
-      if (!activo) {
-        detener();
-        return limpiar;
-      }
-      limpiezas.push(detener);
-    } else {
-      raiz.querySelector('.lector__panel').hidden = true;
+    const detener = await iniciarEfectos(entrada.efectos, raiz, prosa);
+    if (!activo) {
+      detener();
+      return limpiar;
     }
+    limpiezas.push(detener);
 
     // Se aplica al final para incluir los bloques que agregan los efectos
     limpiezas.push(revelarBloques(prosa));

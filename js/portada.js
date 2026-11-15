@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  const { datos, util } = window.Pagina;
+  const { util } = window.Pagina;
   const portada = document.getElementById('vista-portada');
   const escena = portada.querySelector('.escena');
   const pantalla = portada.querySelector('.presentacion__pantalla');
@@ -67,80 +67,14 @@
     });
   });
 
-  /* ---------- Video de presentación ---------- */
-
-  const ICONO_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>';
-
-  function idYoutube(enlace) {
-    const coincide = String(enlace).match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
-    return coincide ? coincide[1] : null;
-  }
-
-  function mostrarAviso() {
-    pantalla.innerHTML = `
-      <div class="presentacion__vacio">
-        <span class="presentacion__play">${ICONO_PLAY}</span>
-        <p class="presentacion__aviso">El video de presentación estará aquí muy pronto</p>
-      </div>`;
-  }
-
-  function montarYoutube(id) {
-    const boton = document.createElement('button');
-    boton.type = 'button';
-    boton.className = 'presentacion__portada';
-    boton.style.backgroundImage = `url("https://i.ytimg.com/vi/${id}/hqdefault.jpg")`;
-    boton.setAttribute('aria-label', 'Reproducir el video de presentación');
-    boton.innerHTML = `<span class="presentacion__play">${ICONO_PLAY}</span>`;
-    // El reproductor de YouTube solo se carga cuando la persona pulsa: la portada sigue liviana
-    boton.addEventListener('click', () => {
-      const marco = document.createElement('iframe');
-      marco.className = 'presentacion__marco';
-      marco.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-      marco.title = 'Video de presentación';
-      marco.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      marco.allowFullscreen = true;
-      boton.replaceWith(marco);
-    });
-    pantalla.replaceChildren(boton);
-  }
-
-  function montarArchivo(config) {
-    const video = document.createElement('video');
-    video.className = 'presentacion__video';
-    video.controls = true;
-    video.playsInline = true;
-    video.preload = 'metadata';
-    const fuente = document.createElement('source');
-    fuente.src = config.archivo;
-    fuente.type = 'video/mp4';
-    video.append(fuente);
-    // Se muestra solo si el archivo existe; si no, queda el aviso
-    video.addEventListener('loadedmetadata', () => {
-      if (config.portada) video.poster = config.portada;
-      pantalla.replaceChildren(video);
-    }, { once: true });
-    fuente.addEventListener('error', mostrarAviso, { once: true });
-    video.load();
-  }
-
-  function montarVideo() {
-    const config = datos.sitio.video || {};
-    const id = config.youtube && idYoutube(config.youtube);
-    if (id) {
-      montarYoutube(id);
-      return;
-    }
-    mostrarAviso();
-    if (config.archivo) montarArchivo(config);
-  }
+  /* ---------- Video de presentación (módulo compartido: js/video.js) ---------- */
 
   /** Pausa el video al salir de la portada. */
   function pausar() {
-    const video = pantalla.querySelector('video');
-    if (video) video.pause();
+    window.Pagina.video.pausar(pantalla);
   }
 
-  montarVideo();
+  window.Pagina.video.montar(pantalla);
   actualizar();
 
   window.Pagina.portada = Object.freeze({ actualizar, irAAstros, pausar });

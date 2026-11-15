@@ -1,12 +1,12 @@
 """
-Convierte los documentos .docx de /documentos en archivos de contenido para la página.
+Extrae el texto de los documentos .docx de /documentos para escribir los resúmenes.
 
 Uso (desde la carpeta Pagina):
     python herramientas/convertir_docx.py
 
-Por cada documento genera js/contenido/<materia>/<id>.js, que registra su HTML
-en window.Contenido. La portada del Word (título, autores, docente, fecha) se omite
-porque esos datos ya están en js/datos.js.
+Por cada documento genera js/contenido/<materia>/<id>.js con su texto completo en HTML.
+Esa carpeta es solo de consulta local: no se publica (está en .gitignore), porque la
+página muestra resúmenes y ofrece el documento original para descargar.
 """
 import html
 import json

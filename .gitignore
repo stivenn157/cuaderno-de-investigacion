@@ -6,3 +6,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Texto completo extraído de los .docx (solo para escribir los resúmenes)
+js/contenido/
+
+# Plantilla e instrucciones recibidas (referencia local)
+Código e Interfaz - Proyecto/

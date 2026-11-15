@@ -117,6 +117,61 @@
 
   /* ---------- Comportamiento ---------- */
 
+  /* Estrategia: dos formas de ver la seguridad (según el Taller 1, pregunta 9) */
+  const VISIONES = {
+    gasto: {
+      riesgo: 0.85,
+      texto: 'Riesgo alto',
+      puntos: ['Licencias vencidas', 'Computadores viejos', 'Sin copias de seguridad automáticas', 'Técnicos apagando incendios a diario'],
+    },
+    estrategia: {
+      riesgo: 0.25,
+      texto: 'Riesgo controlado',
+      puntos: ['Presupuesto basado en riesgos reales', 'Equipos y auditorías a tiempo', 'Planes para no parar de operar', 'La gerencia lidera y da el ejemplo'],
+    },
+  };
+
+  function visionesHtml() {
+    return `
+      <figure class="fx-figura t1-vision" data-vision="gasto">
+        <figcaption class="fx-figura__cabeza"><span class="fx-rotulo">ISO/IEC 27001 · liderazgo</span>Lo que cambia cuando la gerencia ve la seguridad como estrategia</figcaption>
+        <div class="tt-gantt__botones" role="group" aria-label="Forma de ver la seguridad">
+          <button type="button" class="fx-boton" data-vision="gasto" aria-pressed="true">Como un gasto</button>
+          <button type="button" class="fx-boton" data-vision="estrategia" aria-pressed="false">Como estrategia</button>
+        </div>
+        <div class="t1-vision__cuerpo">
+          <ul class="t1-vision__lista"></ul>
+          <div class="t1-vision__medidor">
+            <span class="t1-vision__rotulo">Nivel de riesgo</span>
+            <span class="t1-vision__barra"><span></span></span>
+            <span class="t1-vision__valor"></span>
+          </div>
+        </div>
+      </figure>`;
+  }
+
+  function serviciosHtml() {
+    const servicios = ['Revisión de vulnerabilidades', 'Pruebas de ethical hacking', 'Copias de seguridad', 'Monitoreo constante', 'Atención de incidentes', 'Talleres para empleados'];
+    return `
+      <figure class="fx-figura t1-plan">
+        <figcaption class="fx-figura__cabeza"><span class="fx-rotulo">Plan de negocio</span>Qué se ofrece y cómo entra el dinero</figcaption>
+        <ul class="t1-plan__servicios">${servicios.map((s, i) => `<li style="--i: ${i}">${s}</li>`).join('')}</ul>
+        <div class="t1-plan__ingresos">
+          <div class="t1-plan__modo"><strong>Cobro por auditoría</strong><span>Un pago por cada revisión</span></div>
+          <div class="t1-plan__modo t1-plan__modo--mensual"><strong>Contrato mensual</strong><span>Ingreso fijo por administrar la seguridad</span></div>
+        </div>
+        <p class="fx-nota">Servicios e ingresos tomados del plan descrito en el Taller 1 (INCIBE, 2021).</p>
+      </figure>`;
+  }
+
+  function pintarVision(figura, clave) {
+    const v = VISIONES[clave];
+    figura.dataset.vision = clave;
+    figura.querySelector('.t1-vision__lista').innerHTML = v.puntos.map((p, i) => `<li style="--i: ${i}">${Fx.escapar(p)}</li>`).join('');
+    figura.querySelector('.t1-vision__barra span').style.transform = `scaleY(${v.riesgo})`;
+    figura.querySelector('.t1-vision__valor').textContent = v.texto;
+  }
+
   function iniciar({ raiz, prosa, panel, reducido }) {
     const anim = Fx.animador(reducido);
     const limpiezas = [anim.detener];
@@ -130,7 +185,17 @@
     const impactos = Fx.insertarDespues(t(/Impacto de los incidentes/i), Fx.crear(impactosHtml()));
     const phishing = Fx.insertarDespues(Fx.buscarParrafo(prosa, /phishing simulado/i) || t(/Factor humano/i), Fx.crear(correo()));
 
-    limpiezas.push(Fx.activarAlAparecer([amenazas, historia, triada, conceptos, impactos, phishing]));
+    const vision = Fx.insertarDespues(t(/estrategia empresarial/i), Fx.crear(visionesHtml()), 2);
+    const plan = Fx.insertarDespues(t(/plan de negocio/i), Fx.crear(serviciosHtml()), 2);
+    if (vision) {
+      pintarVision(vision, 'gasto');
+      vision.querySelectorAll('button[data-vision]').forEach((b) => b.addEventListener('click', () => {
+        vision.querySelectorAll('button[data-vision]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        pintarVision(vision, b.dataset.vision);
+      }));
+    }
+
+    limpiezas.push(Fx.activarAlAparecer([amenazas, historia, triada, conceptos, impactos, phishing, vision, plan]));
     limpiezas.push(Fx.descifrarTitulos(prosa, anim));
 
     // Constelación
@@ -140,7 +205,8 @@
     const estado = panelRaiz.querySelector('.fx-panel__estado');
     const temas = Fx.titulos(prosa).filter((h) => h.tagName === 'H3');
     limpiezas.push(Fx.seguirSeccion(temas, (i) => {
-      const encendidas = Math.min(ESTRELLAS.length, i + 1);
+      // Cada resumen tiene pocos subtítulos: el escudo se completa al llegar al último
+      const encendidas = Math.min(ESTRELLAS.length, Math.round(((i + 1) / Math.max(1, temas.length)) * ESTRELLAS.length));
       estrellas.forEach((e, j) => {
         e.classList.toggle('is-encendida', j < encendidas);
         e.classList.toggle('is-actual', j === encendidas - 1);

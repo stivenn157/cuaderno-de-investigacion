@@ -1,9 +1,10 @@
 /*
- * Datos de la página: materias y documentos.
+ * Datos de la página: el sitio, las materias y sus documentos originales (.docx).
  * Para agregar un documento:
- *   1. Copia el .docx en documentos/<materia>/
- *   2. Agrega su nombre en IDS dentro de herramientas/convertir_docx.py y ejecútalo
- *   3. Agrega aquí su ficha (mismo id)
+ *   1. Copia el .docx en documentos/<materia>/ y agrega aquí su ficha.
+ *   2. Agrégalo como tema o caso en js/secciones.js (campo documento = su id).
+ *   3. Escribe su resumen en js/resumenes/<materia>/<temas|casos>/<id>.js.
+ * Para leer el texto completo al escribir un resumen: python herramientas/convertir_docx.py
  */
 window.Pagina = window.Pagina || {};
 
@@ -46,7 +47,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez Arbelaez'],
           fecha: '2026-10-17',
           archivo: 'ACTIVIDAD 1.docx',
-          efectos: true,
         },
         {
           id: 'actividad-practica',
@@ -57,7 +57,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez Arbelaez'],
           fecha: '2026-10-17',
           archivo: 'actividad practica.docx',
-          efectos: true,
         },
         {
           id: 'parcial-1',
@@ -68,7 +67,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez Arbelaez'],
           fecha: '2026-10-24',
           archivo: 'Parcial 1.docx',
-          efectos: true,
         },
         {
           id: 'taller-teorico',
@@ -79,7 +77,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez'],
           fecha: '2026-10-31',
           archivo: 'Taller Teorico.docx',
-          efectos: true,
         },
         {
           id: 'taller-practico',
@@ -90,7 +87,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez'],
           fecha: '2026-10-31',
           archivo: 'Taller practico.docx',
-          efectos: true,
         },
         {
           id: 'taller-teorico-4',
@@ -101,7 +97,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez'],
           fecha: '2026-11-12',
           archivo: 'Taller teorico 4.docx',
-          efectos: true,
         },
         {
           id: 'taller-practico-4',
@@ -112,7 +107,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Estiben Lopez'],
           fecha: '2026-11-12',
           archivo: 'Taller practico 4.docx',
-          efectos: true,
         },
       ],
     },
@@ -135,7 +129,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Adrian Alexis Ramirez Ramirez'],
           fecha: '2026-10-19',
           archivo: 'Taller 1.docx',
-          efectos: true,
         },
         {
           id: 'taller-practico',
@@ -146,7 +139,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Adrian Alexis Ramirez Ramirez'],
           fecha: '2026-10-19',
           archivo: 'Taller practico.docx',
-          efectos: true,
         },
         {
           id: 'parcial-practico',
@@ -157,7 +149,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Jackson Morillo Rodriguez'],
           fecha: '2026-10-26',
           archivo: 'parcial practico linea de enfasis.docx',
-          efectos: true,
         },
         {
           id: 'analisis-de-caso',
@@ -168,7 +159,6 @@ window.Pagina.datos = Object.freeze({
           coautores: ['Adrian Ramirez'],
           fecha: '2026-11-02',
           archivo: 'Analisis de caso.docx',
-          efectos: true,
         },
       ],
     },

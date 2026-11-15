@@ -109,7 +109,8 @@
     raiz.classList.add('p1');
     Fx.realzarComandos(prosa);
 
-    const puntos = Fx.titulos(prosa);
+    // Solo los cinco puntos (h3); las partes del caso (h2) no cuentan
+    const puntos = Fx.titulos(prosa).filter((h) => h.tagName === 'H3');
     const [h1, h2, h3, h4, h5] = puntos;
 
     const ventana = Fx.crear(ventanaHtml());
