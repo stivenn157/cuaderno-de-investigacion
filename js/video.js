@@ -26,7 +26,8 @@
     const boton = document.createElement('button');
     boton.type = 'button';
     boton.className = 'presentacion__portada';
-    boton.style.backgroundImage = `url("https://i.ytimg.com/vi/${id}/hqdefault.jpg")`;
+    // Miniatura grande (1280×720) encima de la pequeña, que queda de respaldo si la grande no existe
+    boton.style.backgroundImage = `url("https://i.ytimg.com/vi/${id}/maxresdefault.jpg"), url("https://i.ytimg.com/vi/${id}/hqdefault.jpg")`;
     boton.setAttribute('aria-label', 'Reproducir el video de presentación');
     boton.innerHTML = `<span class="presentacion__play">${ICONO_PLAY}</span>`;
     // El reproductor de YouTube solo se carga cuando la persona pulsa: la página sigue liviana

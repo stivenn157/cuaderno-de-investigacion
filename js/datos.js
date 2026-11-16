@@ -24,7 +24,7 @@ window.Pagina.datos = Object.freeze({
     video: {
       archivo: 'video/presentacion.mp4',
       portada: 'video/portada.jpg',
-      youtube: '',
+      youtube: 'https://youtu.be/22f96etq6ts',
     },
   },
   materias: [
